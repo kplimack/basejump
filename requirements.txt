@@ -1,0 +1,5 @@
+django
+south
+mysql-python
+django-debug
+django-debug-logging
