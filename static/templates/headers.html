@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lick my wiki">
+    <meta name="author" content="Kyle Jake Plimack">
+
+    <!-- JQuery Includes  - these always come first -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ STATIC_URL }}/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- end JQuery Includes -->
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+
+    <style type="text/css">
+      body {
+      padding-top: 60px;
+      padding-bottom: 40px;
+      }
+      .sidebar-nav {
+      padding: 9px 0;
+      }
+    </style>
+    <link href="{{ STATIC_URL }}/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{{ STATIC_URL }}/bootstrap/docs/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}/bootstrap/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}/bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $('.dropdown-menu').on('click', 'a', function(){
+            console.log("links licked: " + this.id )
+            if(this.id == "new_section_btn"){
+              $('#addPageModal').modal('hide');
+              $('#addSectionModal').modal('show');
+            } else {
+              $('#section_name').html('<i class="icon-glass icon-white"></i>&nbsp;&nbsp;' + this.id);
+              $('#page_section').val(this.id);
+              $('.dropdown-menu').dropdown('toggle');
+              return false;
+            }
+          });
+      });
+    </script>
+    <script type="text/javascript">
+      function insertAtCursor(areaID, text) {
+        var txtarea = document.getElementById(areaID);
+        var scrollPos = txtarea.scrollTop;
+        var strPod = 0;
+        var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
+          "ff" : (document.selection ? "ie" : false ) );
+        if (br == "ie") {
+          txtarea.focus();
+          var range = document.selection.createRange();
+          range.moveStart('character', -txtarea.value.length);
+          strPos = range.text.length;
+        }
+        else if (br == "ff") strPos = txtarea.selectionStart;
+
+        var front = (txtarea.value).substring(0,strPos);
+        var back = (txtarea.value).substring(strPos,txtarea.value.length);
+        txtarea.value = front+text+back;
+        strPos = strPos + text.length;
+        if (br == "ie") {
+          txtarea.focus();
+          var range = document.selection.createRange();
+          range.moveStart('character', -txtarea.value.length);
+          range.moveStart('character', strPos);
+          range.moveEnd('character', 0);
+          range.select();
+        } else if (br == "ff") {
+          txtarea.selectionStart = strPos;
+          txtarea.selectionEnd = strPos;
+          txtarea.focus();
+        }
+        txtarea.scrollTop = scrollPos;
+      }
+    </script>
+  </head>
