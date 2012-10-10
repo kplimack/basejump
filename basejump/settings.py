@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'kickstarter',
     'preseeder',
     'importer',
-    'auth',
+    'authenticator',
 )
 
 def custom_show_toolbar(request):

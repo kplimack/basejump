@@ -9,13 +9,14 @@ admin.autodiscover()
 #handler404 = views.handler404
 
 urlpatterns = patterns('',
-    url('^auth$', include('auth.urls')),
-    url('^$', include('invdb.urls')),
-    url('^invdb/', include('invdb.urls')),
+#                       url(r'^logout', 'authenticator.views.logout_user', name='logout_user'),
+ #                      url(r'^login', 'authenticator.views.login_user', name='login_user'),
+                       url('^', include('authenticator.urls')),
+                       url('^invdb/', include('invdb.urls')),
  #   url('^importer/', include('importer.urls')),
  #   url('^kickstart/', include('kickstart.urls')),
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+                       url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+                       url(r'^admin/', include(admin.site.urls)),
 )
 urlpatterns += staticfiles_urlpatterns()
 

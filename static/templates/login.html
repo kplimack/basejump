@@ -9,7 +9,7 @@
           <div class="span4 offset4">
             <div class="well">
               <legend>Sign in to Basejump</legend>
-              <form method="POST" action="{% url 'auth.views.login_user' %}">
+              <form method="POST" action="{% url 'authenticator.views.login_user' %}">
 		{% csrf_token %}
 		{% if error %}
                 <div class="alert alert-error">
