@@ -1,1 +1,93 @@
-[{"pk": 1, "model": "invdb.physicalstatuscode", "fields": {"code": "Racked"}}, {"pk": 2, "model": "invdb.physicalstatuscode", "fields": {"code": "Unracked"}}, {"pk": 3, "model": "invdb.physicalstatuscode", "fields": {"code": "Unknown"}}, {"pk": 4, "model": "invdb.physicalstatuscode", "fields": {"code": "Sold"}}, {"pk": 1, "model": "invdb.logicalstatuscode", "fields": {"code": "Production"}}, {"pk": 2, "model": "invdb.logicalstatuscode", "fields": {"code": "Dev"}}, {"pk": 3, "model": "invdb.logicalstatuscode", "fields": {"code": "Standby"}}, {"pk": 4, "model": "invdb.logicalstatuscode", "fields": {"code": "Spare"}}, {"pk": 5, "model": "invdb.logicalstatuscode", "fields": {"code": "Personal"}}, {"pk": 6, "model": "invdb.logicalstatuscode", "fields": {"code": "Unknown"}}, {"pk": 3, "model": "invdb.assettype", "fields": {"name": "Access Point"}}, {"pk": 1, "model": "invdb.assettype", "fields": {"name": "Server"}}, {"pk": 2, "model": "invdb.assettype", "fields": {"name": "Switch"}}]
+[
+    {
+        "pk": 1, 
+        "model": "invdb.physicalstatuscode", 
+        "fields": {
+            "code": "Racked"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "invdb.physicalstatuscode", 
+        "fields": {
+            "code": "Unracked"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "invdb.physicalstatuscode", 
+        "fields": {
+            "code": "Unknown"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "invdb.physicalstatuscode", 
+        "fields": {
+            "code": "Sold"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Production"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Dev"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Standby"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Spare"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Personal"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "invdb.logicalstatuscode", 
+        "fields": {
+            "code": "Unknown"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "invdb.assettype", 
+        "fields": {
+            "name": "Access Point"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "invdb.assettype", 
+        "fields": {
+            "name": "Server"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "invdb.assettype", 
+        "fields": {
+            "name": "Switch"
+        }
+    }
+]
