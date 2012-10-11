@@ -11,20 +11,23 @@
               {% include "nav_left.html" %}
             </div>
           </div>
+	  {% if left_menu2 %}
           <div class="row-fluid">
             <div class="span12">
-	      dfdfd
+	      {{ left_menu2 }}
             </div>
           </div>
+	  {% endif %}
         </div><!--/span3-->
         <div class="span9">
           <div class="row-fluid">
             <div class="span12">
-              dfdfdf
+              <h6>BLOCK CONTENT BEGIN</h6>
+              {% block content %}
+              {% endblock %}
+              <h6>BLOCK CONTENT END</h6>
             </div>
           </div>
-          {% block content %}
-          {% endblock %}
         </div><!--/span-->
       </div><!--/row-->
     </div>
