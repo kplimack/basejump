@@ -128,6 +128,8 @@ INSTALLED_APPS = (
     'preseeder',
     'importer',
     'authenticator',
+    'bootstrap',
+    'bootstrap_toolkit',
 )
 
 def custom_show_toolbar(request):

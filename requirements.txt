@@ -1,5 +1,8 @@
 django
 south
 mysql-python
+django-bootstrap
+django-bootstrap-toolkit
 django-debug
 django-debug-logging
+django-debug-toolbar

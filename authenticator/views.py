@@ -5,16 +5,17 @@ from django.template import RequestContext
 from django.contrib.auth.models import *
 from django.contrib.auth import login, authenticate, logout
 from invdb.views import *
+from authenticator.forms import *
 
 def index(request):
     if not request.user.is_authenticated():
-        return render_to_response('login.html',
-                                  context_instance=RequestContext(request))
+        return render_to_response('login.html', {
+            'form': LoginForm(),
+    },                                  context_instance=RequestContext(request))
     else:
         user = request.user
         return render_to_response('index.html',
                                   context_instance=RequestContext(request))
-
 def login_user(request):
     msg = "Please login below..."
     username = password = ''
@@ -34,11 +35,12 @@ def login_user(request):
             msg = "Incorrect username/password"
         if success:
             return HttpResponseRedirect(reverse('invdb.views.index'))
-    else:
-        return render_to_response('login.html', {
+        else:
+            return render_to_response('login.html', {
                 'error': msg,
                 'username': username,
-                }, context_instance=RequestContext(request))
+                'form': LoginForm(),
+            }, context_instance=RequestContext(request))
 
 def logout_user(request):
     logout(request)

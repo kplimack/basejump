@@ -16,10 +16,10 @@ def index(request):
         content_bag = {
             'nav_left_menu': menutize(getAssetTypes()),
             }
+        print "DDFFD"
         print "\n\nCONTENT BAG\n%s\n\n" % content_bag
         return render_to_response('index.html', content_bag,
                                   context_instance=RequestContext(request))
-
 
 def menutize(boo):
     # boo: bunch of objects
@@ -33,5 +33,9 @@ def menutize(boo):
     return menu
 
 def getAssetTypes():
-    results = AssetType.objects.all().order_by('name')
-    return results
+    assettypes = AssetType.objects.all().order_by('name')
+    return assettypes
+
+def getArea():
+    areas = Area.objects.all().order_by('name')
+    return areas
