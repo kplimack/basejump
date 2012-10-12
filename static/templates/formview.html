@@ -21,20 +21,13 @@
         </div><!--/span3-->
         <div class="span9">
           <div class="row-fluid">
-            <div class="span12">
-	      <table class="table-bordered table-condensed table-striped">
-		<thead>
-		  <tr>
-		    <th>id</th>
-		    <th>area</th>
-		    <th>rack</th>
-		    <th>hostname</th>
-		    <th>mgmt IP</th>
-		  </tr>
-		</thead>
-		<tbody>
-		</tbody>
-	      </table>
+            <div class="span12 well">
+	      {% load bootstrap_toolkit %}
+	      <form class="form form-horizontal" method="post" action="{% url form_action %}">
+		{% csrf_token %}
+		{{ form }}
+		<input class="btn btn-primary pull-right" type="submit" value="Add Area" />
+	      </form>
             </div>
           </div>
         </div><!--/span-->

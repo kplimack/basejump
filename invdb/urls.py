@@ -8,8 +8,9 @@ admin.autodiscover()
 #handler404 = views.handler404
 
 urlpatterns = patterns('invdb.views',
-     url(r'^$', 'index', name='index'),
-)
+                       url(r'^$', 'index', name='index'),
+                       url(r'^area_add', 'area_add', name='area_add'),
+                   )
 
 urlpatterns += staticfiles_urlpatterns()
 

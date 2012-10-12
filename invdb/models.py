@@ -5,7 +5,15 @@ class Area(models.Model):
     name = models.CharField(max_length=50, unique=True)
     address =  models.CharField(max_length=200, blank=True)
     phone =  models.CharField(max_length=16, blank=True)
-    email =  models.CharField(max_length=50, blank=True)
+    email =  models.EmailField(max_length=50, blank=True)
+    website = models.URLField(max_length=255, blank=True)
+    notes = models.TextField(blank=True)
+
+    @classmethod
+    def create(klass, area_name, area_phone, area_address, area_email):
+        area = klass(name=area_name, phone=area_phone, address=area_address, email=area_email)
+        return area
+
     def __unicode__(self):
         return self.name
 
