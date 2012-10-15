@@ -26,7 +26,9 @@
 	      <form class="form form-horizontal" method="post" action="{% url form_action %}">
 		{% csrf_token %}
 		{{ form }}
-		<input class="btn btn-primary pull-right" type="submit" value="Add Area" />
+		<div class="form-actions">
+		  <input class="btn btn-primary" type="submit" value="Add Area" />
+		</div>
 	      </form>
             </div>
           </div>

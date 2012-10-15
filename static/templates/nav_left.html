@@ -1,13 +1,21 @@
 {% load url from future %}
 <div class="well sidebar-nav">
   <ul class="nav nav-list">
-    <li class="nav-header">Sections</li>
+    <li class="nav-header">Devices</li>
     <li {% if nav_left_active == 'home' %}class="active" {% endif %}><a href="{% url 'invdb.views.index' %}">Home</a></li>
     {% for item in nav_left_menu %}
     <li {% if item.name == nav_left_active %}class="active" {% endif %}>
       <a href="{{ item.url }}">{{ item.name }}</a>
     </li>
     {% endfor %}
+    {% if areas %}
+    <li class="nav-header">Areas</li>
+    {% for area in areas %}
+    <li {% if area.name == nav_left_active %}class="active" {% endif %}>
+      <a href="{{ area.url }}">{{ area.name }}</a>
+    </li>
+    {% endfor %}
+    {% endif %}
     <li class="nav-header">Settings</li>
     <li><a href="http://localhost:8000/admin" target="_blank">Django Administration</a></li>
   </ul>

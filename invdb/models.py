@@ -10,8 +10,9 @@ class Area(models.Model):
     notes = models.TextField(blank=True)
 
     @classmethod
-    def create(klass, area_name, area_phone, area_address, area_email):
-        area = klass(name=area_name, phone=area_phone, address=area_address, email=area_email)
+    def create(klass, area_name, area_phone, area_address, area_email, area_website, area_notes):
+        area = klass(name=area_name, phone=area_phone, address=area_address, email=area_email,
+                     website=area_website, notes=area_notes)
         return area
 
     def __unicode__(self):

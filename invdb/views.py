@@ -25,17 +25,17 @@ def formview(request, formname):
 
 def gridview(request, gridname="index"):
     content_bag = get_common_content(request)
-    areas = getArea()
-    if not areas:
-        return formview(request, "area_add")
-    content_bag['areas'] = areas
     print "\n\nCONTENT BAG\n%s\n\n" % content_bag
     return render_to_response(gridname + '.html', content_bag, context_instance=RequestContext(request))
 
 def get_common_content(request):
+    areas = getArea()
+    if not areas:
+        return formview(request, "area_add")
     content_bag = {
         'nav_left_menu': menutize(getAssetTypes()),
         'user': request.user,
+        'areas': areas,
     }
     return content_bag
 
@@ -66,7 +66,10 @@ def area_add(request):
             area_address = form.cleaned_data['address']
             area_phone = form.cleaned_data['phone']
             area_email = form.cleaned_data['email']
+            area_website = form.cleaned_data['website']
+            area_notes = form.cleaned_data['notes']
+            area = Area.create(area_name, area_phone, area_address, area_email, area_website, area_notes)
+            area.save()
         else:
             return formview(request,'area_add')
-    else:
-        return index(request)
+    return index(request)
