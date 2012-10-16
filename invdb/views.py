@@ -70,6 +70,6 @@ def area_add(request):
             area_notes = form.cleaned_data['notes']
             area = Area.create(area_name, area_phone, area_address, area_email, area_website, area_notes)
             area.save()
-        else:
-            return formview(request,'area_add')
+    else:
+        return formview(request,'area_add')
     return index(request)
