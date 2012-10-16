@@ -1,38 +1,14 @@
+{% extends "index.html" %}
 {% load url from future %}
-{% include "headers.html" %}
-<body>
-  {% include "nav_top.html" %}
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span12">
-        <div class="span3">
-          <div class="row-fluid">
-            <div class="span12">
-              {% include "nav_left.html" %}
-            </div>
-          </div>
-	  {% if left_menu2 %}
-          <div class="row-fluid">
-            <div class="span12">
-	      {{ left_menu2 }}
-            </div>
-          </div>
-	  {% endif %}
-        </div><!--/span3-->
-        <div class="span9">
-          <div class="row-fluid">
-            <div class="span12 well">
-	      {% load bootstrap_toolkit %}
-	      <form class="form form-horizontal" method="post" action="{% url form_action %}">
-		{% csrf_token %}
-		{{ form }}
-		<div class="form-actions">
-		  <input class="btn btn-primary" type="submit" value="Add Area" />
-		</div>
-	      </form>
-            </div>
-          </div>
-        </div><!--/span-->
-      </div><!--/row-->
+{% block content %}
+<div class="well">
+  {% load bootstrap_toolkit %}
+  <form class="form form-horizontal" method="post" action="{% url form_action %}">
+    {% csrf_token %}
+    {{ form }}
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="{{ submit_txt }}" />
     </div>
-    {% include "footer.html" %}
+  </form>
+</div>
+{% endblock %}

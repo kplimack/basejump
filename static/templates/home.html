@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+<h3>basejump dashboard</h3>
+<div class="row-fluid">
+<div class="span4 well">
+  <h5>Areas{% if areas %}: {{ areas.count }}{% endif %}</h5>
+  {% if areas %}
+  <ul>
+  {% for area in areas %}
+  <li>{{ area.name }}</li>
+  {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+<div class="span4 well">
+  <h5>Assets{% if assets %}: {{ assets.count }}{% endif %}</h5>
+  {% if assettypes %}
+  <ul>
+  {% for assettype in assettypes %}
+  <li>{{ areatype.name }}: {{ assettype.count }}</li>
+  {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+<div class="span4 well">
+  <h5>Recent Changes</h5>
+</div>
+</row>
+{% endblock %}

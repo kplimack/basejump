@@ -23,3 +23,4 @@ class AddArea(BootstrapForm):
     email = forms.CharField(max_length=50,widget=forms.TextInput(attrs=styles['textbox']))
     website = forms.CharField(max_length=255,widget=forms.TextInput(attrs=styles['textbox']))
     notes = forms.CharField(widget=forms.Textarea(attrs=styles['textarea']))
+

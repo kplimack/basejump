@@ -10,28 +10,24 @@ from invdb.forms import *
 
 def index(request):
     if not request.user.is_authenticated():
-        return formview(request, 'login')
+        return view(request, 'login')
     else:
-        return gridview(request, 'index')
+        return view(request, 'home')
 
 
-def formview(request, formname):
+def view(request, viewname):
     content_bag = get_common_content(request)
-    if formname == "area_add":
+    if viewname == "area_add":
         content_bag['form'] = AddArea()
         content_bag['form_action'] = 'invdb.views.area_add'
+        content_bag['submit_txt'] = "Add Form"
     print "\n\nCONTENT BAG\n%s\n\n" % content_bag
-    return render_to_response('formview.html', content_bag, context_instance=RequestContext(request))
-
-def gridview(request, gridname="index"):
-    content_bag = get_common_content(request)
-    print "\n\nCONTENT BAG\n%s\n\n" % content_bag
-    return render_to_response(gridname + '.html', content_bag, context_instance=RequestContext(request))
+    return render_to_response(viewname + '.html', content_bag, context_instance=RequestContext(request))
 
 def get_common_content(request):
     areas = getArea()
     if not areas:
-        return formview(request, "area_add")
+        return view(request, "area_add")
     content_bag = {
         'nav_left_menu': menutize(getAssetTypes()),
         'user': request.user,
@@ -71,5 +67,5 @@ def area_add(request):
             area = Area.create(area_name, area_phone, area_address, area_email, area_website, area_notes)
             area.save()
     else:
-        return formview(request,'area_add')
+        return view(request,'area_add')
     return index(request)
