@@ -5,6 +5,7 @@
 local_settings.py
 env*
 *migrations*
+basejump.db
 
 # emacs stuff
 *~
