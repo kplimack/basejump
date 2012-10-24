@@ -17,17 +17,19 @@ def index(request):
 
 def view(request, viewname):
     content_bag = get_common_content(request)
+    if not content_bag['areas']:
+        viewname="area_add"
     if viewname == "area_add":
         content_bag['form'] = AddArea()
         content_bag['form_action'] = 'invdb.views.area_add'
         content_bag['submit_txt'] = "Add Form"
+        viewname="formview"
+
     print "\n\nCONTENT BAG\n%s\n\n" % content_bag
     return render_to_response(viewname + '.html', content_bag, context_instance=RequestContext(request))
 
 def get_common_content(request):
     areas = getArea()
-    if not areas:
-        return view(request, "area_add")
     content_bag = {
         'nav_left_menu': menutize(getAssetTypes()),
         'user': request.user,
