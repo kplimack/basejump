@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth.models import *
 from basejump.plural import plural
+from basejump.urlizer import urlize
 from invdb.models import *
 from invdb.forms import *
 
@@ -22,7 +23,7 @@ def view(request, viewname):
     if viewname == "area_add":
         content_bag['form'] = AddArea()
         content_bag['form_action'] = 'invdb.views.area_add'
-        content_bag['submit_txt'] = "Add Form"
+        content_bag['submit_txt'] = "Add Area"
         viewname="formview"
 
     print "\n\nCONTENT BAG\n%s\n\n" % content_bag
@@ -31,20 +32,28 @@ def view(request, viewname):
 def get_common_content(request):
     areas = getArea()
     content_bag = {
-        'nav_left_menu': menutize(getAssetTypes()),
+        'nav_left_menu': menutize(getAssetTypes(), True, "assets"),
         'user': request.user,
         'areas': areas,
+        'areas_menu': menutize(areas, False, "areas"),
     }
     return content_bag
 
-def menutize(boo):
+def menutize(boo, pluralize=False, urlpath=None):
     # boo: bunch of objects
     menu = []
     for o in boo:
-        menuitem = {
-            'name': plural(o.name),
-            'url': '#',
-            }
+        menuitem = {}
+        if urlpath:
+            menuitem['url'] = urlize(urlpath + '/' + o.name)
+        else:
+            menuitem['url'] = '#'
+
+        if pluralize:
+            menuitem['name'] = plural(o.name)
+        else:
+            menuitem['name'] = o.name
+
         menu.append(menuitem)
     return menu
 
