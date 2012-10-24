@@ -3,7 +3,7 @@ from django import forms
 
 styles = {
     'textarea': {
-        'rows': 7,
+        'rows': 4,
         'class': "field span9",
         'style': "resize:none;"
     },
