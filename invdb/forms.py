@@ -34,13 +34,14 @@ class AddRack(BootstrapForm):
     area = forms.ModelChoiceField(queryset=Area.objects.all())
     numu = forms.IntegerField()
 
-class AddDevice(BootstrapForm):
+class AddAsset(BootstrapForm):
     class Meta:
         layout = (
             Fieldset("Add Asset", "type", "model", "serial", "purchase_date", "hostname",
                      "eth0_ip", "eth0_mac", "eth1_ip", "eth1_mac", "console", "notes",
                      "physical_status", "logical_status", "rack", "rack_u", "rack_u_size"),
         )
+        type = forms.ModelChoiceField(queryset=AssetType.objects.all())
         model = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
         serial = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
         purchase_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']))

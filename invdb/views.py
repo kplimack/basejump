@@ -16,16 +16,23 @@ def index(request):
         return view(request, 'home')
 
 
-def view(request, viewname):
+def view(request, route):
     content_bag = get_common_content(request)
     if not content_bag['areas']:
         viewname="area_add"
-    if viewname == "area_add":
+    if route == "area_add":
         content_bag['form'] = AddArea()
         content_bag['form_action'] = 'invdb.views.area_add'
         content_bag['submit_txt'] = "Add Area"
-        viewname="formview"
-
+        viewname = "formview"
+    elif route == "asset_add":
+        content_bag['form'] = AddAsset()
+        content_bag['form_action'] = 'invdb.views.asset_add'
+        content_bag['submit_txt'] = "Add Asset"
+        viewname = "formview"
+    else:
+        viewname = route
+    print "VIEWNAME=%s" % viewname
     print "\n\nCONTENT BAG\n%s\n\n" % content_bag
     return render_to_response(viewname + '.html', content_bag, context_instance=RequestContext(request))
 
@@ -89,7 +96,7 @@ def asset_add(request):
     if request.method == "POST":
         form = AddAsset(request.POST)
         if form.is_valid():
-            asset_type = form.cleaned_data['type']
+#            asset_type = form.cleaned_data['type']
             asset_model = form.cleaned_data['model']
             asset_serial = form.cleaned_data['serial']
             asset_purchase_date = form.cleaned_data['purchase_date']
@@ -107,4 +114,7 @@ def asset_add(request):
             asset_rack_u_size = form.cleaned_data['rack_u_size']
             asset = Asset.create(asset_model, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac, asset_eth1_ip, asset_eth1_mac, asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size)
             asset.save()
-    
+    else:
+        return view(request,'asset_add')
+    return index(request)
+
