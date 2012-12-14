@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('invdb.views',
                        url(r'^$', 'index', name='index'),
                        url(r'^area_add', 'area_add', name='area_add'),
+                       url(r'^asset_add', 'asset_add', name='asset_add'),
                    )
 
 urlpatterns += staticfiles_urlpatterns()
