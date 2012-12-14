@@ -8,7 +8,7 @@
       <a href="{{ item.url }}"><i class="icon-chevron-right"></i> {{ item.name }}</a>
     </li>
     {% endfor %}
-    <li><a href="#"><i class="icon-cog"></i> Add Device</a></li>
+    <li><a href="{% url 'invdb.views.asset_add' %}"><i class="icon-cog"></i> Add Device</a></li>
     {% if areas %}
     <li class="nav-header">Areas</li>
     {% for area in areas_menu %}

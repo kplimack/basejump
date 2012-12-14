@@ -1,6 +1,7 @@
 django
 south
 mysql-python
+gunicorn
 django-bootstrap
 django-bootstrap-toolkit
 django-debug

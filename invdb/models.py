@@ -65,3 +65,7 @@ class Asset(models.Model):
     def __unicode__(self):
         return self.hostname
 
+    @classmethod
+    def create(klass, asset_model, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac, asset_eth1_ip, asset_eth1_mac, asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size):
+        asset = klass(model=asset_model, serial=asset_serial, purchase_date=asset_purchase_date, hostname=asset_hostname, eth0_ip=asset_eth0_ip, eth0_mac=asset_eth0_mac, eth1_ip=asset_eth1_ip, eth1_mac=asset_eth1_mac, console=asset_console, notes=asset_notes, physical_status=asset_physical_status, logical_status=asset_logical_status, rack=asset_rack, rack_u=asset_rack_u, rack_u_size=asset_rack_u_size)
+        return asset
