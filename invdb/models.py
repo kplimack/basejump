@@ -7,7 +7,7 @@ class Area(models.Model):
     phone =  models.CharField(max_length=16, blank=True)
     email =  models.EmailField(max_length=50, blank=True)
     website = models.URLField(max_length=255, blank=True)
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, null=True, default=None)
 
     @classmethod
     def create(klass, area_name, area_phone, area_address, area_email, area_website, area_notes):
