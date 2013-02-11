@@ -18,8 +18,8 @@ def index(request):
 
 def view(request, route):
     content_bag = get_common_content(request)
-    if not content_bag['areas']:
-        viewname="area_add"
+    if content_bag['areas'].count() < 1:
+        route="area_add"
     if route == "area_add":
         content_bag['form'] = AddArea()
         content_bag['form_action'] = 'invdb.views.area_add'
