@@ -16,17 +16,18 @@ def index(request):
         return view(request, 'home')
 
 
-def view(request, route):
+def view(request, route, form_errors=None):
     content_bag = get_common_content(request)
+    content_bag['form_errors'] = form_errors
     if content_bag['areas'].count() < 1:
         route="area_add"
     if route == "area_add":
-        content_bag['form'] = AddArea()
+        content_bag['form'] = AddArea(initial=request.POST)
         content_bag['form_action'] = 'invdb.views.area_add'
         content_bag['submit_txt'] = "Add Area"
         viewname = "formview"
     elif route == "asset_add":
-        content_bag['form'] = AddAsset()
+        content_bag['form'] = AddAsset(initial=request.POST)
         content_bag['form_action'] = 'invdb.views.asset_add'
         content_bag['submit_txt'] = "Add Asset"
         viewname = "formview"

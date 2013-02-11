@@ -5,6 +5,12 @@
   {% load bootstrap_toolkit %}
   <form class="form form-horizontal" method="post" action="{% url form_action %}">
     {% csrf_token %}
+    {% if form_errors %}
+    <div class="alert alert-error">
+      <h5>ERRORS:</h5>
+      {{ form_errors }}
+    </div>
+    {% endif %}
     {{ form }}
     <div class="form-actions">
       <input class="btn btn-primary" type="submit" value="{{ submit_txt }}" />
