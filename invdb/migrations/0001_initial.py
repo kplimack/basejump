@@ -16,7 +16,7 @@ class Migration(SchemaMigration):
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
             ('email', self.gf('django.db.models.fields.EmailField')(max_length=50, blank=True)),
             ('website', self.gf('django.db.models.fields.URLField')(max_length=255, blank=True)),
-            ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ('notes', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
         db.send_create_signal('invdb', ['Area'])
 
@@ -50,6 +50,16 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('invdb', ['Role'])
 
+        # Adding model 'Interface'
+        db.create_table('invdb_interface', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(default=None, max_length=10, null=True, blank=True)),
+            ('ip4', self.gf('django.db.models.fields.IPAddressField')(default=None, max_length=15, unique=True, null=True, blank=True)),
+            ('vlan', self.gf('django.db.models.fields.IntegerField')(default='0', max_length=4, null=True, blank=True)),
+            ('mac', self.gf('django.db.models.fields.CharField')(default=None, max_length=12, unique=True, null=True, blank=True)),
+        ))
+        db.send_create_signal('invdb', ['Interface'])
+
         # Adding model 'AssetType'
         db.create_table('invdb_assettype', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -60,15 +70,18 @@ class Migration(SchemaMigration):
         # Adding model 'Asset'
         db.create_table('invdb_asset', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['invdb.AssetType'])),
+            ('asset_type', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['invdb.AssetType'])),
+            ('alt_id', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, null=True, blank=True)),
             ('model', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, null=True, blank=True)),
             ('serial', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, null=True, blank=True)),
+            ('asset_tag', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, null=True, blank=True)),
             ('purchase_date', self.gf('django.db.models.fields.DateField')(default=None, null=True, blank=True)),
             ('hostname', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
             ('eth0_ip', self.gf('django.db.models.fields.IPAddressField')(default=None, max_length=15, unique=True, null=True, blank=True)),
             ('eth0_mac', self.gf('django.db.models.fields.CharField')(default=None, max_length=12, unique=True, null=True, blank=True)),
-            ('eth1_ip', self.gf('django.db.models.fields.IPAddressField')(default=None, max_length=15, unique=True, null=True, blank=True)),
-            ('eth1_mac', self.gf('django.db.models.fields.CharField')(default=None, max_length=12, unique=True, null=True, blank=True)),
+            ('eth0_vlan', self.gf('django.db.models.fields.IntegerField')(default='0', max_length=4, null=True, blank=True)),
+            ('eth0_partner', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='interface', null=True, blank=True, to=orm['invdb.Asset'])),
+            ('interfaces', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['invdb.Interface'], null=True)),
             ('console', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, unique=True, null=True, blank=True)),
             ('notes', self.gf('django.db.models.fields.CharField')(default=None, max_length=255, null=True, blank=True)),
             ('physical_status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['invdb.PhysicalStatusCode'])),
@@ -76,6 +89,7 @@ class Migration(SchemaMigration):
             ('rack', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['invdb.Rack'], null=True, blank=True)),
             ('rack_u', self.gf('django.db.models.fields.IntegerField')(default=None, max_length=3, null=True, blank=True)),
             ('rack_u_size', self.gf('django.db.models.fields.IntegerField')(default=None, max_length=3, null=True, blank=True)),
+            ('pdu0_id', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['invdb.Asset'], null=True, blank=True)),
         ))
         db.send_create_signal('invdb', ['Asset'])
 
@@ -96,6 +110,9 @@ class Migration(SchemaMigration):
         # Deleting model 'Role'
         db.delete_table('invdb_role')
 
+        # Deleting model 'Interface'
+        db.delete_table('invdb_interface')
+
         # Deleting model 'AssetType'
         db.delete_table('invdb_assettype')
 
@@ -110,34 +127,46 @@ class Migration(SchemaMigration):
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '50', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '255', 'blank': 'True'})
         },
         'invdb.asset': {
             'Meta': {'object_name': 'Asset'},
+            'alt_id': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'asset_tag': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'asset_type': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['invdb.AssetType']"}),
             'console': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'eth0_ip': ('django.db.models.fields.IPAddressField', [], {'default': 'None', 'max_length': '15', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'eth0_mac': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '12', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'eth1_ip': ('django.db.models.fields.IPAddressField', [], {'default': 'None', 'max_length': '15', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'eth1_mac': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '12', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'eth0_partner': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'interface'", 'null': 'True', 'blank': 'True', 'to': "orm['invdb.Asset']"}),
+            'eth0_vlan': ('django.db.models.fields.IntegerField', [], {'default': "'0'", 'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'interfaces': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['invdb.Interface']", 'null': 'True'}),
             'logical_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['invdb.LogicalStatusCode']"}),
             'model': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'notes': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'pdu0_id': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['invdb.Asset']", 'null': 'True', 'blank': 'True'}),
             'physical_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['invdb.PhysicalStatusCode']"}),
             'purchase_date': ('django.db.models.fields.DateField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'rack': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['invdb.Rack']", 'null': 'True', 'blank': 'True'}),
             'rack_u': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'rack_u_size': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'max_length': '3', 'null': 'True', 'blank': 'True'}),
-            'serial': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['invdb.AssetType']"})
+            'serial': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'})
         },
         'invdb.assettype': {
             'Meta': {'object_name': 'AssetType'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
+        },
+        'invdb.interface': {
+            'Meta': {'object_name': 'Interface'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ip4': ('django.db.models.fields.IPAddressField', [], {'default': 'None', 'max_length': '15', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'mac': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '12', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'vlan': ('django.db.models.fields.IntegerField', [], {'default': "'0'", 'max_length': '4', 'null': 'True', 'blank': 'True'})
         },
         'invdb.logicalstatuscode': {
             'Meta': {'object_name': 'LogicalStatusCode'},

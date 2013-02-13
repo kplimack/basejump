@@ -117,6 +117,8 @@ def asset_add(request):
             asset_rack_u_size = form.cleaned_data['rack_u_size']
             asset = Asset.create(asset_model, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac, asset_eth1_ip, asset_eth1_mac, asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size)
             asset.save()
+        else:
+            return view(request, 'asset_add', form.errors)
     else:
         return view(request,'asset_add')
     return index(request)
