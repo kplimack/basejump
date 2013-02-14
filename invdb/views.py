@@ -105,17 +105,38 @@ def asset_add(request):
             asset_purchase_date = form.cleaned_data['purchase_date']
             asset_hostname = form.cleaned_data['hostname']
             asset_alt_id = form.cleaned_data['alt_id']
-            asset_eth0_ip = form.cleaned_data['eth0_ip']
-            asset_eth0_mac = form.cleaned_data['eth0_mac']
-#            asset_eth0_vlan = form.clea
+            asset_primary_interface_name = form.cleaned_data['primary_interface_name']
+            asset_primary_interface_ip4 = form.cleaned_data['primary_interface_ip4']
+            asset_primary_interface_mac = form.cleaned_data['primary_interface_mac']
+            asset_primary_interface_vlan = form.cleaned_data['primary_interface_vlan']
+            asset_primary_interface_partner = form.cleaned_data['primary_interface_partner']
             asset_console = form.cleaned_data['console']
             asset_notes = form.cleaned_data['notes']
             asset_physical_status = form.cleaned_data['physical_status']
             asset_logical_status = form.cleaned_data['logical_status']
             asset_rack = form.cleaned_data['rack']
-            asset_rack_u = 1#form.cleaned_data['rack_u']
-            asset_rack_u_size = 1#form.cleaned_data['rack_u_size']
-            asset = Asset.create(asset_model, asset_type, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac,  asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size, asset_alt_id)
+            asset_rack_u = 1 #form.cleaned_data['rack_u']
+            asset_rack_u_size = 1 #form.cleaned_data['rack_u_size']
+            asset = Asset.create(
+                asset_model,
+                asset_type,
+                asset_serial,
+                asset_purchase_date,
+                asset_hostname,
+                asset_primary_interface_name,
+                asset_primary_interface_ip4,
+                asset_primary_interface_mac,
+                asset_primary_interface_vlan,
+                asset_primary_interface_partner,
+                asset_console,
+                asset_notes,
+                asset_physical_status,
+                asset_logical_status,
+                asset_rack,
+                asset_rack_u,
+                asset_rack_u_size,
+                asset_alt_id
+            )
             asset.save()
         else:
             return view(request, 'asset_add', form.errors)

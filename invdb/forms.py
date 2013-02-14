@@ -57,7 +57,7 @@ class AddAsset(BootstrapForm):
                      "purchase_date",
                      "provision_date",
                      "primary_interface_name",
-                     "primary_interface_ip",
+                     "primary_interface_ip4",
                      "primary_interface_mac",
                      "primary_interface_vlan",
                      "primary_interface_partner",
@@ -69,6 +69,7 @@ class AddAsset(BootstrapForm):
     def __init__(self, *args, **kwargs):
         super(AddAsset, self).__init__(*args, **kwargs)
         self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()])
+        self.fields['primary_interface_partner'].required=False
 
     now = datetime.datetime.now()
     asset_type = forms.ModelChoiceField(queryset=AssetType.objects.all(), empty_label=None)
@@ -80,13 +81,13 @@ class AddAsset(BootstrapForm):
     decomission_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
     hostname = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
     primary_interface_name = forms.CharField(max_length=10, widget=forms.TextInput(attrs=styles['textbox']), initial="eth0")
-    primary_interface_ip = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    primary_interface_ip4 = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
     primary_interface_mac = forms.CharField(max_length=12, widget=forms.TextInput(attrs=styles['textbox']), required=False)
     primary_interface_vlan = forms.CharField(widget=forms.TextInput(attrs=styles['textbox']), initial="0")
     console = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), required=False)
     notes = forms.CharField(max_length=255, widget=forms.Textarea(attrs=styles['textarea']), required=False)
     physical_status = forms.ModelChoiceField(queryset=PhysicalStatusCode.objects.all(), empty_label=None)
     logical_status = forms.ModelChoiceField(queryset=LogicalStatusCode.objects.all(), empty_label=None)
-    rack = forms.ModelChoiceField(queryset=Rack.objects.all(), required=False)
+    rack = forms.ModelChoiceField(queryset=Rack.objects.all(), required=False, empty_label="Disabled")
 #        rack_u = forms.ModelChoiceField()
 #        rack_u_size = forms.ModelChoiceField()

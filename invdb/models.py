@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction, IntegrityError
 
 # Create your models here.
 class Area(models.Model):
@@ -45,10 +45,29 @@ class Interface(models.Model):
     ip4 = models.IPAddressField(unique=True, null=True, blank=True, default=None)
     vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
     mac = models.CharField(max_length=12,unique=True, null=True, blank=True, default=None)
-    owner = models.ForeignKey('Asset')
+    owner = models.ForeignKey('Asset', null=True, blank=True, default=None)
     partner = models.ForeignKey('self', null=True)
+
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def create(klass,
+               interface_name,
+               interface_ip4,
+               interface_vlan,
+               interface_mac,
+               interface_owner=None,
+               interface_partner=None):
+        interface = klass(
+            name=interface_name,
+            ip4=interface_ip4,
+            vlan=interface_vlan,
+            mac=interface_mac,
+            owner=interface_owner,
+            partner=interface_partner
+        )
+        return interface
 
 class AssetType(models.Model):
     name = models.CharField(max_length=50,unique=True)
@@ -63,11 +82,8 @@ class Asset(models.Model):
     asset_tag = models.CharField(max_length=50, blank=True, null=True, default=None)
     purchase_date = models.DateField(blank=True, null=True, default=None)
     hostname = models.CharField(max_length=50, unique=True)
- #   eth0_ip = models.IPAddressField(unique=True, null=True, default=None, blank=True)
- #   eth0_mac = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
- #   eth0_vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
-#    eth0_partner = models.ForeignKey('self', null=True, blank=True, default=None, related_name='interface')
-    interfaces = models.ForeignKey(Interface, null=True)
+    primary_interface = models.OneToOneField(Interface, null=True, blank=True)
+#    interfaces = models.ForeignKey(Interface, null=True, related_name='owner')
     console = models.CharField(max_length=50, unique=True, default=None, null=True, blank=True)
     notes = models.CharField(max_length=255, blank=True, null=True, default=None)
     physical_status = models.ForeignKey(PhysicalStatusCode)
@@ -87,8 +103,11 @@ class Asset(models.Model):
                asset_serial,
                asset_purchase_date,
                asset_hostname,
-               #asset_eth0_ip,
-               #asset_eth0_mac,
+               asset_primary_interface_name,
+               asset_primary_interface_ip4,
+               asset_primary_interface_mac,
+               asset_primary_interface_vlan,
+               asset_primary_interface_partner,
                asset_console,
                asset_notes,
                asset_physical_status,
@@ -103,8 +122,13 @@ class Asset(models.Model):
             serial=asset_serial,
             purchase_date=asset_purchase_date,
             hostname=asset_hostname,
-            #eth0_ip=asset_eth0_ip,
-            #eth0_mac=asset_eth0_mac,
+            # primary_interface=Interface.create(
+            #     asset_primary_interface_name,
+            #     asset_primary_interface_ip4,
+            #     asset_primary_interface_mac,
+            #     asset_primary_interface_vlan,
+            #     asset_primary_interface_partner
+            # ),
             console=asset_console,
             notes=asset_notes,
             physical_status=asset_physical_status,
