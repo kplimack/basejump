@@ -45,7 +45,8 @@ class Interface(models.Model):
     ip4 = models.IPAddressField(unique=True, null=True, blank=True, default=None)
     vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
     mac = models.CharField(max_length=12,unique=True, null=True, blank=True, default=None)
-#    partner = models.ForeignKey(Asset)
+    owner = models.ForeignKey('Asset')
+    partner = models.ForeignKey('self', null=True)
     def __unicode__(self):
         return self.name
 
@@ -62,10 +63,10 @@ class Asset(models.Model):
     asset_tag = models.CharField(max_length=50, blank=True, null=True, default=None)
     purchase_date = models.DateField(blank=True, null=True, default=None)
     hostname = models.CharField(max_length=50, unique=True)
-    eth0_ip = models.IPAddressField(unique=True, null=True, default=None, blank=True)
-    eth0_mac = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
-    eth0_vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
-    eth0_partner = models.ForeignKey('self', null=True, blank=True, default=None, related_name='interface')
+ #   eth0_ip = models.IPAddressField(unique=True, null=True, default=None, blank=True)
+ #   eth0_mac = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
+ #   eth0_vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
+#    eth0_partner = models.ForeignKey('self', null=True, blank=True, default=None, related_name='interface')
     interfaces = models.ForeignKey(Interface, null=True)
     console = models.CharField(max_length=50, unique=True, default=None, null=True, blank=True)
     notes = models.CharField(max_length=255, blank=True, null=True, default=None)
@@ -80,7 +81,37 @@ class Asset(models.Model):
         return self.hostname
 
     @classmethod
-    def create(klass, asset_model, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac, asset_eth1_ip, asset_eth1_mac, asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size, asset_alt_id):
-        asset = klass(model=asset_model, serial=asset_serial, purchase_date=asset_purchase_date, hostname=asset_hostname, eth0_ip=asset_eth0_ip, eth0_mac=asset_eth0_mac, eth1_ip=asset_eth1_ip, eth1_mac=asset_eth1_mac, console=asset_console, notes=asset_notes, physical_status=asset_physical_status, logical_status=asset_logical_status, rack=asset_rack, rack_u=asset_rack_u, rack_u_size=asset_rack_u_size, alt_id=asset_alt_id)
+    def create(klass,
+               asset_model,
+               asset_asset_type,
+               asset_serial,
+               asset_purchase_date,
+               asset_hostname,
+               #asset_eth0_ip,
+               #asset_eth0_mac,
+               asset_console,
+               asset_notes,
+               asset_physical_status,
+               asset_logical_status,
+               asset_rack,
+               asset_rack_u,
+               asset_rack_u_size,
+               asset_alt_id):
+        asset = klass(
+            model=asset_model,
+            asset_type=asset_asset_type,
+            serial=asset_serial,
+            purchase_date=asset_purchase_date,
+            hostname=asset_hostname,
+            #eth0_ip=asset_eth0_ip,
+            #eth0_mac=asset_eth0_mac,
+            console=asset_console,
+            notes=asset_notes,
+            physical_status=asset_physical_status,
+            logical_status=asset_logical_status,
+            rack=asset_rack,
+            rack_u=asset_rack_u,
+            rack_u_size=asset_rack_u_size,
+            alt_id=asset_alt_id)
         return asset
 

@@ -99,23 +99,23 @@ def asset_add(request):
     if request.method == "POST":
         form = AddAsset(request.POST)
         if form.is_valid():
-#            asset_type = form.cleaned_data['type']
+            asset_type = form.cleaned_data['asset_type']
             asset_model = form.cleaned_data['model']
             asset_serial = form.cleaned_data['serial']
             asset_purchase_date = form.cleaned_data['purchase_date']
             asset_hostname = form.cleaned_data['hostname']
+            asset_alt_id = form.cleaned_data['alt_id']
             asset_eth0_ip = form.cleaned_data['eth0_ip']
             asset_eth0_mac = form.cleaned_data['eth0_mac']
-            asset_eth1_ip = form.cleaned_data['eth1_ip']
-            asset_eth1_mac = form.cleaned_data['eth1_mac']
+#            asset_eth0_vlan = form.clea
             asset_console = form.cleaned_data['console']
             asset_notes = form.cleaned_data['notes']
             asset_physical_status = form.cleaned_data['physical_status']
             asset_logical_status = form.cleaned_data['logical_status']
             asset_rack = form.cleaned_data['rack']
-            asset_rack_u = form.cleaned_data['rack_u']
-            asset_rack_u_size = form.cleaned_data['rack_u_size']
-            asset = Asset.create(asset_model, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac, asset_eth1_ip, asset_eth1_mac, asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size)
+            asset_rack_u = 1#form.cleaned_data['rack_u']
+            asset_rack_u_size = 1#form.cleaned_data['rack_u_size']
+            asset = Asset.create(asset_model, asset_type, asset_serial, asset_purchase_date, asset_hostname, asset_eth0_ip, asset_eth0_mac,  asset_console, asset_notes, asset_physical_status, asset_logical_status, asset_rack, asset_rack_u, asset_rack_u_size, asset_alt_id)
             asset.save()
         else:
             return view(request, 'asset_add', form.errors)

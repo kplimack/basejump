@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'authenticator',
     'bootstrap',
     'bootstrap_toolkit',
+    'crispy_forms'
 )
 
 def custom_show_toolbar(request):

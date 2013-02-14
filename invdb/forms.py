@@ -1,6 +1,8 @@
 from bootstrap.forms import BootstrapForm, Fieldset
 from django import forms
+from crispy_forms.helper import FormHelper
 from invdb.models import *
+import datetime
 
 styles = {
     'textarea': {
@@ -34,26 +36,55 @@ class AddRack(BootstrapForm):
     area = forms.ModelChoiceField(queryset=Area.objects.all())
     numu = forms.IntegerField()
 
+def getInterfaces(query_filter=None):
+    result_list = []
+    ifaces = Interface.objects.filter(partner__isnull=True)
+    for iface in ifaces:
+        result_list.append(iface)
+    print "getInterfaces: %s" % result_list
+    return result_list
+
 class AddAsset(BootstrapForm):
     class Meta:
         layout = (
-            Fieldset("Add Asset", "asset_type", "hostname", "alt_id", "model", "serial", "purchase_date",
-                     "eth0_ip", "eth0_mac", "eth0_partner", "console", "notes",
-                     "physical_status", "logical_status", "rack"),
+            Fieldset("Add Asset",
+                     "asset_type",
+                     "hostname",
+                     "alt_id",
+                     "model",
+                     "serial",
+                     "console",
+                     "purchase_date",
+                     "provision_date",
+                     "primary_interface_name",
+                     "primary_interface_ip",
+                     "primary_interface_mac",
+                     "primary_interface_vlan",
+                     "primary_interface_partner",
+                     "physical_status",
+                     "logical_status",
+                     "rack",
+                     "notes",),
         )
+    def __init__(self, *args, **kwargs):
+        super(AddAsset, self).__init__(*args, **kwargs)
+        self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()])
+
+    now = datetime.datetime.now()
     asset_type = forms.ModelChoiceField(queryset=AssetType.objects.all(), empty_label=None)
     alt_id = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), initial="Managed Services Reference ID")
     model = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), initial="SKU0 - Dell R410 96GB + 16TB RAID6")
     serial = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
     purchase_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    provision_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    decommission_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    provision_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False, initial=datetime.date.today())  #now.strftime("%Y-%m-%d"))
+    decomission_date = forms.DateField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
     hostname = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
-    eth0_ip = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    eth0_mac = forms.CharField(max_length=12, widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    eth0_partner = forms.ModelChoiceField(queryset=Asset.objects.all(), required=False)
+    primary_interface_name = forms.CharField(max_length=10, widget=forms.TextInput(attrs=styles['textbox']), initial="eth0")
+    primary_interface_ip = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    primary_interface_mac = forms.CharField(max_length=12, widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    primary_interface_vlan = forms.CharField(widget=forms.TextInput(attrs=styles['textbox']), initial="0")
     console = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    notes = forms.CharField(max_length=255, widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    notes = forms.CharField(max_length=255, widget=forms.Textarea(attrs=styles['textarea']), required=False)
     physical_status = forms.ModelChoiceField(queryset=PhysicalStatusCode.objects.all(), empty_label=None)
     logical_status = forms.ModelChoiceField(queryset=LogicalStatusCode.objects.all(), empty_label=None)
     rack = forms.ModelChoiceField(queryset=Rack.objects.all(), required=False)
