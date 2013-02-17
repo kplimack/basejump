@@ -1,6 +1,8 @@
-from bootstrap.forms import BootstrapForm, Fieldset
 from django import forms
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import *
+from crispy_forms.bootstrap import *
+from bootstrap.forms import BootstrapForm, Fieldset
 from invdb.models import *
 import datetime
 
@@ -36,13 +38,70 @@ class AddRack(BootstrapForm):
     area = forms.ModelChoiceField(queryset=Area.objects.all())
     numu = forms.IntegerField()
 
-def getInterfaces(query_filter=None):
+def getInterfaces(asset_type_name=None, *args, **kwargs ):
     result_list = []
-    ifaces = Interface.objects.filter(partner__isnull=True)
+    owner_id = kwargs.pop('owner', '')
+    if owner_id:
+        interfaces = Interface.objects.filter(owner__exact=owner_id)
+        return interfaces or None
+    if asset_type_name is not None:
+        print "Searching for interfaces of type %s" % asset_type_name
+        assettype = AssetType.objects.get(name__exact=asset_type_name)
+        if assettype:
+            print "found %s" % assettype.name
+        else:
+            print "SEARCH FOR ASSETTYPE FAILED"
+            return None
+        print "searching for Interfaces of AssetType %s" % assettype.name
+        ifaces = Interface.objects.filter(partner__isnull=True, owner__asset_type__exact=assettype)
+        if ifaces:
+            print "Found %s ifaces" % ifaces.count()
+        else:
+            print "Search for Interfaces had 0 results"
+            return None
+    else:
+        print "Searching for interfaces that are not parnered"
+        ifaces = Interface.objects.filter(partner__isnull=True)
+    if not ifaces.count():
+        print "NO LONLY INTERFACES FOUND"
+        return None
     for iface in ifaces:
         result_list.append(iface)
-    print "getInterfaces: %s" % result_list
+    print "\n\ngetInterfaces: %s\n\n" % result_list
     return result_list
+
+class EditAsset(forms.ModelForm):
+    class Meta:
+        model=Asset
+    def __init__(self, *args, **kwargs):
+        asset_id = kwargs.pop('asset_id', '')
+        super(EditAsset, self).__init__(*args, **kwargs)
+  #      available_pdu_ports = getInterfaces('PDU')
+ #       if available_pdu_ports is not None:
+ #           self.fields['pdu0_id'] = forms.ChoiceField(choices = [ (pdu.pk, pdu.owner.hostname + " - " + pdu.name) for pdu in available_pdu_ports])
+ #       else:
+ #           self.fields['pdu0_id'] = forms.ChoiceField(choices = [ (0, '---')])
+        asset = Asset.objects.get(pk=asset_id)
+        print "\n\nFINDING PRIMARY INTERFACE FOR %s" % asset.hostname
+        self.fields['primary_interface'] = forms.ModelChoiceField(queryset=Interface.objects.filter(pk__exact=asset.primary_interface.id))
+#        self.fields['pdu0_id'].required=False
+#        self.fields['pdu0_id'].initial = 0
+
+class AddInterface(forms.ModelForm):
+    class Meta:
+        model=Interface
+
+    def __init__(self, *args, **kwargs):
+        owner_id = kwargs.pop('owner', '')
+        super(AddInterface, self).__init__(*args, **kwargs)
+        if owner_id:
+            owner = Asset.objects.get(pk=int(owner_id))
+        self.fields['owner'] = forms.CharField()
+        self.fields['owner'].widget.attrs['readonly'] = True
+        self.fields['owner'].initial = owner
+        self.fields['partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()], initial=0)
+        self.fields['partner'].required=False
+        self.fields['partner'].choices.append((0, "---"))
 
 class AddAsset(BootstrapForm):
     class Meta:
@@ -68,8 +127,9 @@ class AddAsset(BootstrapForm):
         )
     def __init__(self, *args, **kwargs):
         super(AddAsset, self).__init__(*args, **kwargs)
-        self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()])
+        self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()], initial=0)
         self.fields['primary_interface_partner'].required=False
+        self.fields['primary_interface_partner'].choices.append((0, "---"))
 
     now = datetime.datetime.now()
     asset_type = forms.ModelChoiceField(queryset=AssetType.objects.all(), empty_label=None)

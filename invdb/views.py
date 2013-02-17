@@ -15,8 +15,35 @@ def index(request):
     else:
         return view(request, 'home')
 
+def asset_view(request, asset_type=None):
+    if asset_type:
+        assets = Asset.objects.filter(asset_type__name__exact=asset_type)
+    else:
+        assets = Asset.objects.all()
+    return view(request, 'asset_view', None, None, assets)
 
-def view(request, route, form_errors=None):
+def asset_edit(request, asset_id):
+    if request.method == "POST":
+        asset = getAsset(asset_id)
+        form = EditAsset(request.POST, instance=asset, asset_id=asset_id)
+        if form.is_valid():
+            form.save()
+        else:
+            return view(request, 'asset_edit', form.errors, asset_id)
+    return view(request, 'asset_edit', None, asset_id)
+
+def interface_edit(request, interface_id):
+    if request == "POST":
+        interface = getInterfaces(interface_id)
+        form = AddInterface(request.POST, instance=interface)
+        if form.is_valid():
+            form.save()
+        else:
+            return view(request, 'interface_edit', form.errors, interface_id)
+    else:
+        return view(request, 'asset_view')
+
+def view(request, route, form_errors=None, instance_id=None, assets=None):
     content_bag = get_common_content(request)
     content_bag['form_errors'] = form_errors
     if content_bag['areas'].count() < 1:
@@ -31,6 +58,25 @@ def view(request, route, form_errors=None):
         content_bag['form_action'] = 'invdb.views.asset_add'
         content_bag['submit_txt'] = "Add Asset"
         viewname = "formview"
+    elif route == "asset_edit":
+        asset = getAsset(instance_id)
+        print "EditAsset(%s)" % asset.pk
+        content_bag['form'] = EditAsset(instance=asset, asset_id=instance_id)
+        content_bag['form_action'] = 'invdb.views.asset_edit'
+        content_bag['asset_id'] = asset.pk
+        content_bag['submit_txt'] = "Save Asset"
+        content_bag['interface_form'] = AddInterface(owner=instance_id)
+        content_bag['interfaces'] = getInterfaces(owner=asset.pk)
+        viewname="asset_edit"
+    elif route == "interface_edit":
+        interface = getInterfaces(instance_id)
+        print "EditInterface(%s)" % interface.pk
+        content_bag['form'] = EditInterface(instance=interface)
+        content_bag['submit_txt'] = "Save Interface"
+        viewname="interface_edit"
+    elif route == 'asset_view':
+        viewname = "gridview"
+        content_bag['assets'] = assets
     else:
         viewname = route
     print "VIEWNAME=%s" % viewname
@@ -47,15 +93,13 @@ def get_common_content(request):
     }
     return content_bag
 
-def menutize(boo, pluralize=False, urlpath=None):
+def menutize(boo, pluralize=False, section='assets'):
     # boo: bunch of objects
     menu = []
     for o in boo:
         menuitem = {}
-        if urlpath:
-            menuitem['url'] = urlize(urlpath + '/' + o.name)
-        else:
-            menuitem['url'] = '#'
+        menuitem['section'] = section
+        menuitem['assettype'] = o.name
 
         if pluralize:
             menuitem['name'] = plural(o.name)
@@ -72,6 +116,37 @@ def getAssetTypes():
 def getArea():
     areas = Area.objects.all().order_by('name')
     return areas
+
+def interface_add(request, asset_id):
+    if request.method == "POST":
+        form = AddInterface(request.POST, owner=asset_id)
+        asset = Asset.objects.get(pk=int(asset_id))
+        try:
+            form.is_valid()
+        except:
+            pass
+        if asset:
+            interface_name = form.cleaned_data['name']
+            interface_ip4 = form.cleaned_data['ip4']
+            interface_mac = form.cleaned_data['mac']
+            interface_vlan = form.cleaned_data['vlan']
+            interface_owner = asset
+            partner = form.cleaned_data['partner']
+            print "\n\TRYING TO PARTNER WITH %s" % partner
+            interface = Interface.objects.get(pk=int(form.cleaned_data['partner'][0]))
+            interface_partner = interface
+            interface = Interface.create_full(interface_name,
+                                         interface_ip4,
+                                         interface_mac,
+                                         interface_vlan,
+                                         interface_owner,
+                                         interface_partner)
+            interface.save()
+            interface_partner.partner = interface
+            interface_partner.save()
+        else:
+            return view(request, 'asset_edit', form.errors, asset_id)
+    return view(request, 'asset_edit', None, asset_id)
 
 def area_add(request):
     if request.method == "POST":
@@ -91,8 +166,13 @@ def area_add(request):
         return view(request,'area_add')
     return index(request)
 
-def getAsset():
-    assets = Asset.objects.all().order_by('name')
+def getAsset(asset_id=None):
+    if asset_id is not None:
+        print "searching for asset with pk=%s" % asset_id
+        asset = Asset.objects.get(pk=asset_id)
+        return asset
+    else:
+        assets = Asset.objects.all().order_by('hostname')
     return assets
 
 def asset_add(request):
@@ -123,11 +203,6 @@ def asset_add(request):
                 asset_serial,
                 asset_purchase_date,
                 asset_hostname,
-                asset_primary_interface_name,
-                asset_primary_interface_ip4,
-                asset_primary_interface_mac,
-                asset_primary_interface_vlan,
-                asset_primary_interface_partner,
                 asset_console,
                 asset_notes,
                 asset_physical_status,
@@ -137,6 +212,18 @@ def asset_add(request):
                 asset_rack_u_size,
                 asset_alt_id
             )
+            asset.save()
+
+            interface = Interface.create(
+                asset_primary_interface_name,
+                asset_primary_interface_ip4,
+                asset_primary_interface_mac,
+                asset_primary_interface_vlan,
+                asset,
+
+            )
+            interface.save()
+            asset.primary_interface = interface
             asset.save()
         else:
             return view(request, 'asset_add', form.errors)

@@ -55,15 +55,31 @@ class Interface(models.Model):
     def create(klass,
                interface_name,
                interface_ip4,
-               interface_vlan,
                interface_mac,
+               interface_vlan,
+               interface_owner=None):
+        interface = klass(
+            name=interface_name,
+            ip4=interface_ip4,
+            mac=interface_mac,
+            vlan=interface_vlan,
+            owner=interface_owner,
+        )
+        return interface
+
+    @classmethod
+    def create_full(klass,
+               interface_name,
+               interface_ip4,
+               interface_mac,
+               interface_vlan,
                interface_owner=None,
                interface_partner=None):
         interface = klass(
             name=interface_name,
             ip4=interface_ip4,
-            vlan=interface_vlan,
             mac=interface_mac,
+            vlan=interface_vlan,
             owner=interface_owner,
             partner=interface_partner
         )
@@ -83,15 +99,14 @@ class Asset(models.Model):
     purchase_date = models.DateField(blank=True, null=True, default=None)
     hostname = models.CharField(max_length=50, unique=True)
     primary_interface = models.OneToOneField(Interface, null=True, blank=True)
-#    interfaces = models.ForeignKey(Interface, null=True, related_name='owner')
-    console = models.CharField(max_length=50, unique=True, default=None, null=True, blank=True)
+    console = models.CharField(max_length=50, default=None, null=True, blank=True)
     notes = models.CharField(max_length=255, blank=True, null=True, default=None)
     physical_status = models.ForeignKey(PhysicalStatusCode)
     logical_status = models.ForeignKey(LogicalStatusCode)
     rack = models.ForeignKey(Rack,null=True, blank=True, default=None)
     rack_u = models.IntegerField(max_length=3, null=True, blank=True, default=None)
     rack_u_size = models.IntegerField(max_length=3, null=True, blank=True, default=None)
-    pdu0_id = models.ForeignKey('self', null=True, blank=True, default=None)
+#    pdu0_id = models.ForeignKey('self', null=True, blank=True, default=None)
 
     def __unicode__(self):
         return self.hostname
@@ -103,11 +118,6 @@ class Asset(models.Model):
                asset_serial,
                asset_purchase_date,
                asset_hostname,
-               asset_primary_interface_name,
-               asset_primary_interface_ip4,
-               asset_primary_interface_mac,
-               asset_primary_interface_vlan,
-               asset_primary_interface_partner,
                asset_console,
                asset_notes,
                asset_physical_status,
@@ -122,13 +132,6 @@ class Asset(models.Model):
             serial=asset_serial,
             purchase_date=asset_purchase_date,
             hostname=asset_hostname,
-            # primary_interface=Interface.create(
-            #     asset_primary_interface_name,
-            #     asset_primary_interface_ip4,
-            #     asset_primary_interface_mac,
-            #     asset_primary_interface_vlan,
-            #     asset_primary_interface_partner
-            # ),
             console=asset_console,
             notes=asset_notes,
             physical_status=asset_physical_status,
