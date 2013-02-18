@@ -27,6 +27,7 @@ def dirPerms(path):
         dperms = os.stat(path)
         res= str(dperms.st_mode & stat.S_IRGRP)
         print "DPERM RESULTS::    %s \n\n" % res
+        return False
     else:
         return False
 
