@@ -1,0 +1,63 @@
+[
+    {
+        "pk": 18,
+        "model": "contenttypes.contenttype",
+        "fields": {
+            "model": "bootoption",
+            "name": "boot option",
+            "app_label": "kickstarter"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "contenttypes.contenttype",
+        "fields": {
+            "model": "kssettings",
+            "name": "kssettings",
+            "app_label": "kickstarter"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "contenttypes.contenttype",
+        "fields": {
+            "model": "servicecheck",
+            "name": "service check",
+            "app_label": "kickstarter"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "kickstarter.servicecheck",
+        "fields": {
+            "command": "dir_exists TFTP_ROOT",
+            "name": "TFTPBOOT_EXISTS"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "kickstarter.servicecheck",
+        "fields": {
+            "command": "dir_perms TFTP_ROOT",
+            "name": "TFTPROOT_PERMS"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "kickstarter.kssettings",
+        "fields": {
+            "permanent": true,
+            "setting": "/data/tftpboot",
+            "name": "TFTP_ROOT"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "kickstarter.kssettings",
+        "fields": {
+            "permanent": false,
+            "setting": "localboot",
+            "name": "default_bootoption"
+        }
+    },
+]
