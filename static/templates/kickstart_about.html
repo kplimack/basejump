@@ -1,0 +1,45 @@
+<div class="span3">
+  <div class="well">
+    <h2 class="muted">Step1</h2>
+    <p><span class="label">POWERON</span></p>
+    <ul>
+      <li>DHCP</li>
+    </ul>
+    <p>DHCPD returns network info, next-server, and PXE file-name</p>
+  </div>
+</div>
+<div class="span3">
+  <div class="well">
+    <h2 class="text-warning">Step2</h2>
+    <p><span class="label label-warning">BOOT</span></p>
+    <ul>
+      <li>TFTP</li>
+    </ul>
+    <p>TFTP request for pxelinux.0, kernel, and boot source.  We also deliver a url to ksconfig</p>
+  </div>
+</div>
+<div class="span3">
+  <div class="well">
+    <h2 class="text-info">Step3</h2>
+    <p><span class="label label-info">Kickstart</span></p>
+    <ul>
+      <li>HTTP</li>
+      <li>XFF</li>
+      <li>Packages</li>
+      <li>Partitioning</li>
+    </ul>
+    <p>The host requests a ksconfig file from a badejump url.  The host's MAC address is read from the X-Forwarded-For header and used to retrieve data and render the ksconfig file, which is then returned to the host</p>
+  </div>
+</div>
+<div class="span3">
+  <div class="well">
+    <h2 class="text-success">Step4</h2>
+    <p><span class="label label-success">Config MGMT</span></p>
+    <ul>
+      <li>Chef</li>
+      <li>Puppit</li>
+      <li>CFEngine</li>
+    </ul>
+    <p>When the host is ready (Kickstart-POST), we'll drop an agent in place to take the base OS and provision it into its final state</p>
+  </div>
+</div>
