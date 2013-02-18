@@ -53,8 +53,8 @@
         <td>{{ check.name }}</td>
         <td>{{ check.command }}</td>
         <td>
-          {% if checkResults|get_item:check.name == "OK" %}
-            <span class="label label-success">OK</span>
+          {% if checkResults|get_item:check.name ==  "Passed" %}
+            <span class="label label-success">Passed</span>
           {% elif checkResults|get_item:check.name == "Warning" %}
             <span class="label label-warning">Warning</span>
           {% elif checkResults|get_item:check.name == "Failed" %}

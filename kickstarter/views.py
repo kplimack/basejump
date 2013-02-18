@@ -10,6 +10,7 @@ from basejump.urlizer import urlize
 from kickstarter.models import *
 from kickstarter.forms import *
 from invdb.models import Asset
+from basejump.checker import *
 
 def index(request):
     if not request.user.is_authenticated():
@@ -64,18 +65,4 @@ def settings_add(request):
             new_setting = kssettings.create(name, new_setting)
             new_setting.save()
     return settings_view(request)
-
-def runChecks(checks):
-    results = {}
-    for check in checks:
-        cmd = check.command.split()
-        if cmd[0] == "dir_exists":
-            print "CHECKING DIR_EXISTS(%s)" % cmd[1]
-            results[check.name] = "Failed"
-        elif cmd[0] == "dir_perms":
-            print "CHECKING DIR_PERMS(%s)" % cmd[1]
-            results[check.name] = "OK"
-        print "FUNCTION %s" % cmd
-    return results
- #       print "VAR %s" % var
 
