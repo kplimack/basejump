@@ -8,7 +8,11 @@
         <div class="span3">
           <div class="row-fluid">
             <div class="span12">
-              {% include "nav_left.html" %}
+              {% if appname == "kickstarter" %}
+                {% include "nav_left_kickstarter.html" %}
+              {% else %}
+                {% include "nav_left.html" %}
+              {% endif %}
             </div>
           </div>
 	  {% if left_menu2 %}

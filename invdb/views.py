@@ -90,6 +90,7 @@ def get_common_content(request):
         'user': request.user,
         'areas': areas,
         'areas_menu': menutize(areas, False, "areas"),
+        'appname': "invdb",
     }
     return content_bag
 

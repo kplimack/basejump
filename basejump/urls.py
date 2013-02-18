@@ -12,7 +12,7 @@ urlpatterns = patterns('',
                        url('^', include('authenticator.urls')),
                        url('^invdb/', include('invdb.urls')),
  #   url('^importer/', include('importer.urls')),
- #   url('^kickstart/', include('kickstart.urls')),
+                       url('^kickstarter/', include('kickstarter.urls')),
                        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
                        url(r'^admin/', include(admin.site.urls)),
 )
