@@ -18,8 +18,8 @@
           </p>
           <ul class="nav">
             <li class="active"><a href="{% url 'invdb.views.index' %}">Home</a></li>
-            <li><a href="#">Inventory</a></li>
-            <li><a href="#">Kickstarter</a></li>
+            <li><a href="{% url 'invdb.views.index' %}">Inventory</a></li>
+            <li><a href="{% url 'kickstarter.views.index' %}">Kickstarter</a></li>
             <li><a href="#">Preseeder</a></li>
             <li><a href="#">Importer</a></li>
           </ul>

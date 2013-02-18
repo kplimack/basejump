@@ -17,7 +17,7 @@
 
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
-
+    <script src="{{ STATIC_URL }}/bootstrap/docs/assets/js/bootstrap-tab.js"></script>
     <style type="text/css">
       body {
       padding-top: 60px;
@@ -92,5 +92,15 @@
         }
         txtarea.scrollTop = scrollPos;
       }
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+      console.log("DOM READY");
+          $('#assetTabs a').click(function(e) {
+              e.preventDefault();
+              console.log('tab clicked!');
+              $(this).tab('show');
+          });
+      });
     </script>
   </head>

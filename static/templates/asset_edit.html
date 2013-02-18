@@ -2,79 +2,24 @@
 {% load url from future %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="well">
-  {% load bootstrap_toolkit %}
-  <form class="form form-horizontal" method="post" action="{% url 'invdb.views.asset_edit' asset_id %}">
-    {% csrf_token %}
-    {% if form_errors %}
-    <div class="alert alert-error">
-      <h5>ERRORS:</h5>
-      {{ form_errors }}
-    </div>
-    {% endif %}
-    {{ form|crispy }}
-    <div class="form-actions">
-      <input class="btn btn-primary" type="submit" value="{{ submit_txt }}" />
-    </div>
-  </form>
-  <div class="well">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Device</th>
-          <th>IP Address</th>
-          <th>MAC Address</th>
-          <th>VLAN</th>
-          <th>Partner</th>
-          <th style="width: 36px;"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for interface in interfaces %}
-        <tr>
-          <td>{{ interface.name }}</td>
-          <td>{{ interface.ip4 }}</td>
-          <td>{{ interface.mac }}</td>
-          <td>{{ interface.vlan }}</td>
-          {% if interface.partner %}
-            <td>{{ interface.partner.owner.hostname }}-{{ interface.partner }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-          <td>
-            <a href=" url 'invdb.views.interface_edit' /{{ interface.pk }}"><i class="icon-pencil"></i></a>
-            <a href="#myModal" role="button" data-toggle="modal"><i class="icon-remove"></i></a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="myModalLabel">Delete Confirmation</h3>
-    </div>
-    <div class="modal-body">
-      <p class="error-text">Are you sure you want to delete the user?</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-      <button class="btn btn-danger" data-dismiss="modal">Delete</button>
-    </div>
-  </div>
-  <form class="form form-horizontal" method="POST" action="{% url 'invdb.views.interface_add' asset_id %}">
-    {% csrf_token %}
-    {% if form_errors %}
-    <div class="alert alert-error">
-      <h5>ERRORS:</h5>
-      {{ form_errors }}
-    </div>
-    {% endif %}
-    {{ interface_form|crispy }}
-    <div class="form-actions">
-      <input class="btn btn-primary" type="submit" value="Add Interface" />
-    </div>
-  </form>
+
+<ul class="nav nav-tabs" id="assetTabs">
+  <li class="active"><a href="#General">General</a></li>
+  <li><a href="#Interfaces">Interfaces</a></li>
+  <li><a href="#SNMP">SNMP</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="General">{% include "asset_general.html" %}</div>
+  <div class="tab-pane" id="Interfaces">{% include "asset_interfaces.html" %}</div>
+  <div class="tab-pane" id="SNMP">SNMP</div>
 </div>
+
+<script>
+  $(function () {
+
+  $('#assetTabs a[href="#General"]').tab('show');
+  })
+</script>
+
 {% endblock %}

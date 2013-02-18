@@ -1,0 +1,18 @@
+{% load url from future %}
+{% load crispy_forms_tags %}
+<div class="well">
+  {% load bootstrap_toolkit %}
+  <form class="form form-horizontal" method="post" action="{% url 'invdb.views.asset_edit' asset_id %}">
+    {% csrf_token %}
+    {% if form_errors %}
+    <div class="alert alert-error">
+      <h5>ERRORS:</h5>
+      {{ form_errors }}
+    </div>
+    {% endif %}
+    {{ form|crispy }}
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="{{ submit_txt }}" />
+    </div>
+  </form>
+</div>
