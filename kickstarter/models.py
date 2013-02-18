@@ -5,15 +5,18 @@ class ServiceCheck(models.Model):
         return self.name
     name = models.CharField(max_length=50, unique=True)
     command = models.CharField(max_length=250, null=True, blank=True, default=None)
+    result = models.CharField(max_length=250, null=True, blank=True, default=None)
 
     @classmethod
     def create(klass,
                service_name,
                service_command,
+               service_result
     ):
         servicecheck=klass(
             name=service_name,
             command=service_command,
+            result=service_result
         )
         return servicecheck
 

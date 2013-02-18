@@ -44,6 +44,7 @@
       <tr>
         <th>Check</th>
         <th>Command</th>
+        <th>Expected Result</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -52,6 +53,7 @@
       <tr>
         <td>{{ check.name }}</td>
         <td>{{ check.command }}</td>
+        <td>{{ check.result }}</td>
         <td>
           {% if checkResults|get_item:check.name ==  "Passed" %}
             <span class="label label-success">Passed</span>
