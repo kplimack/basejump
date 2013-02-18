@@ -127,7 +127,11 @@ class AddAsset(BootstrapForm):
         )
     def __init__(self, *args, **kwargs):
         super(AddAsset, self).__init__(*args, **kwargs)
-        self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()], initial=0)
+        interfaces = getInterfaces()
+        if interfaces is not None:
+            self.fields['primary_interface_partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()], initial=0)
+        else:
+            self.fields['primary_interface_partner'] = forms.ChoiceField()
         self.fields['primary_interface_partner'].required=False
         self.fields['primary_interface_partner'].choices.append((0, "---"))
 
