@@ -27,6 +27,15 @@
         }
     }, 
     {
+        "pk": 18, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bootoption", 
+            "name": "boot option", 
+            "app_label": "kickstarter"
+        }
+    }, 
+    {
         "pk": 4, 
         "model": "contenttypes.contenttype", 
         "fields": {
@@ -51,6 +60,15 @@
             "model": "interface", 
             "name": "interface", 
             "app_label": "invdb"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "kssettings", 
+            "name": "kssettings", 
+            "app_label": "kickstarter"
         }
     }, 
     {
@@ -117,6 +135,15 @@
         }
     }, 
     {
+        "pk": 19, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "servicecheck", 
+            "name": "service check", 
+            "app_label": "kickstarter"
+        }
+    }, 
+    {
         "pk": 5, 
         "model": "contenttypes.contenttype", 
         "fields": {
@@ -141,6 +168,14 @@
             "model": "user", 
             "name": "user", 
             "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": "a01064b70cfbfbabf6bf5d262665d05c", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-03-04T16:15:14Z", 
+            "session_data": "MGMyMGNkZTIyODk2N2NlZGI2MzMyYzAyN2NhNjQwNTEwZTViYjM1MTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQJ1Lg==\n"
         }
     }, 
     {
@@ -169,15 +204,21 @@
         }
     }, 
     {
-        "pk": 1, 
-        "model": "invdb.area", 
+        "pk": 2, 
+        "model": "south.migrationhistory", 
         "fields": {
-            "website": "portal.carpathia.com", 
-            "name": "Carpathia (Dulles)", 
-            "notes": "", 
-            "phone": "(703) 858-9973", 
-            "address": "222", 
-            "email": "noc@carpathia.com"
+            "applied": "2013-02-14T23:05:20Z", 
+            "app_name": "invdb", 
+            "migration": "0002_auto__del_unique_asset_console"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2013-02-17T21:27:14Z", 
+            "app_name": "invdb", 
+            "migration": "0003_auto__del_field_asset_pdu0_id"
         }
     }, 
     {
@@ -276,6 +317,40 @@
         "model": "invdb.assettype", 
         "fields": {
             "name": "Switch"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "kickstarter.servicecheck", 
+        "fields": {
+            "command": "dir_exists TFTP_ROOT", 
+            "name": "TFTPBOOT_EXISTS"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "kickstarter.servicecheck", 
+        "fields": {
+            "command": "dir_perms TFTP_ROOT", 
+            "name": "TFTPROOT_PERMS"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "kickstarter.kssettings", 
+        "fields": {
+            "permanent": true, 
+            "setting": "/data/tftpboot", 
+            "name": "TFTP_ROOT"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "kickstarter.kssettings", 
+        "fields": {
+            "permanent": false, 
+            "setting": "localboot", 
+            "name": "default_bootoption"
         }
     }, 
     {
@@ -630,6 +705,87 @@
         }
     }, 
     {
+        "pk": 52, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_bootoption", 
+            "name": "Can add boot option", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_bootoption", 
+            "name": "Can change boot option", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_bootoption", 
+            "name": "Can delete boot option", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_kssettings", 
+            "name": "Can add kssettings", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_kssettings", 
+            "name": "Can change kssettings", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_kssettings", 
+            "name": "Can delete kssettings", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_servicecheck", 
+            "name": "Can add service check", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_servicecheck", 
+            "name": "Can change service check", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_servicecheck", 
+            "name": "Can delete service check", 
+            "content_type": 19
+        }
+    }, 
+    {
         "pk": 13, 
         "model": "auth.permission", 
         "fields": {
@@ -711,34 +867,60 @@
         }
     }, 
     {
-        "pk": 1, 
+        "pk": 2, 
         "model": "auth.user", 
         "fields": {
-            "username": "jplimack", 
+            "username": "admin", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2013-02-13T15:54:28Z", 
+            "last_login": "2013-02-18T16:15:14Z", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "pbkdf2_sha256$10000$SmWQgv47QnSM$KWW8cKX1S+lNp0ZHF/BHHG7LfK4HwnkbLFJufyE3RUQ=", 
-            "email": "jakeplimack@clearchannel.com", 
-            "date_joined": "2013-02-13T15:52:56Z"
+            "password": "pbkdf2_sha256$10000$dCn0oYAxV9AP$5k00RijnJsYuJdsODlAXNwrt3mrqHRn8UJmuVbalmME=", 
+            "email": "", 
+            "date_joined": "2013-02-18T16:14:41Z"
         }
     }, 
     {
-        "pk": 1, 
+        "pk": 10, 
         "model": "admin.logentry", 
         "fields": {
-            "action_flag": 1, 
-            "action_time": "2013-02-13T16:16:27Z", 
-            "object_repr": "PDU", 
-            "object_id": "4", 
+            "action_flag": 3, 
+            "action_time": "2013-02-18T16:16:22Z", 
+            "object_repr": "iad-pdu101.inf.iheart.com", 
+            "object_id": "29", 
             "change_message": "", 
-            "user": 1, 
-            "content_type": 15
+            "user": 2, 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-02-18T16:16:22Z", 
+            "object_repr": "jake.iheart.com", 
+            "object_id": "28", 
+            "change_message": "", 
+            "user": 2, 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2013-02-18T16:16:04Z", 
+            "object_repr": "Carpathia (Dulles)", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 2, 
+            "content_type": 9
         }
     }
 ]
