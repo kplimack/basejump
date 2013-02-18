@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth.models import *
+from django import template
 from basejump.plural import plural
 from basejump.urlizer import urlize
 from kickstarter.models import *
@@ -24,6 +25,10 @@ def view(request, route, form_errors=None, instance_id=None, assets=None):
         viewname = "kickstart_servers"
     elif route == 'settings_view':
         settings = kssettings.objects.all()
+        service_checks = ServiceCheck.objects.all()
+        checkResults = runChecks(service_checks)
+        content_bag['service_checks'] = service_checks
+        content_bag['checkResults'] = checkResults
         content_bag['form'] = EditSetting()
         content_bag['settings'] = settings
         viewname = 'kickstart_settings'
@@ -34,6 +39,7 @@ def view(request, route, form_errors=None, instance_id=None, assets=None):
     else:
         viewname = 'kickstart'
     print "rendering viewname(%s)" % viewname
+    print "\n\nCONTENT_BAG:\n%s\n\n" % content_bag
     return render_to_response(viewname + '.html', content_bag, context_instance=RequestContext(request))
 
 
@@ -58,3 +64,18 @@ def settings_add(request):
             new_setting = kssettings.create(name, new_setting)
             new_setting.save()
     return settings_view(request)
+
+def runChecks(checks):
+    results = {}
+    for check in checks:
+        cmd = check.command.split()
+        if cmd[0] == "dir_exists":
+            print "CHECKING DIR_EXISTS(%s)" % cmd[1]
+            results[check.name] = "Failed"
+        elif cmd[0] == "dir_perms":
+            print "CHECKING DIR_PERMS(%s)" % cmd[1]
+            results[check.name] = "OK"
+        print "FUNCTION %s" % cmd
+    return results
+ #       print "VAR %s" % var
+

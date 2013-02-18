@@ -1,5 +1,21 @@
 from django.db import models
 
+class ServiceCheck(models.Model):
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=50, unique=True)
+    command = models.CharField(max_length=250, null=True, blank=True, default=None)
+
+    @classmethod
+    def create(klass,
+               service_name,
+               service_command,
+    ):
+        servicecheck=klass(
+            name=service_name,
+            command=service_command,
+        )
+        return servicecheck
 
 class kssettings(models.Model):
     def __unicode__(self):
