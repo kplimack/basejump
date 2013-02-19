@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth.models import *
@@ -66,3 +66,17 @@ def settings_add(request):
             new_setting.save()
     return settings_view(request)
 
+def kick(request):
+    response = HttpResponse("Here's your rendered kickstart file.\n", content_type="text/plain")
+#    response.write("Your MAC Address is: \n")
+    response.write("request: %s" % request)
+    return response
+
+def kickme(request, opsys, release, arch):
+    response = HttpResponse("Here's your rendered kickstart file.\n", content_type="text/plain")
+    debugging =  "Operating System: %s\nRelease: %s\nArch: %s\n" % (opsys, release, arch)
+    response.write(debugging)
+    log = open('kicker.log', 'w')
+    response.write("\n\n\n\n\n\n\n=============================================request:=============================================\n\n %s" % request)
+    log.write("%s" % request)
+    return response
