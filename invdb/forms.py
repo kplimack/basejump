@@ -93,15 +93,27 @@ class AddInterface(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         owner_id = kwargs.pop('owner', '')
+        interface_id = kwargs.pop('interface_id', '')
         super(AddInterface, self).__init__(*args, **kwargs)
         if owner_id:
             owner = Asset.objects.get(pk=int(owner_id))
         self.fields['owner'] = forms.CharField()
         self.fields['owner'].widget.attrs['readonly'] = True
-        self.fields['owner'].initial = owner
+        try:
+            self.fields['owner'].initial = owner
+        except:
+            pass
         self.fields['partner'] = forms.ChoiceField(choices = [ (iface.id, iface.owner.hostname + " - " + iface.name) for iface in getInterfaces()], initial=0)
         self.fields['partner'].required=False
         self.fields['partner'].choices.append((0, "---"))
+        if interface_id:
+            interface = Interface.objects.get(pk=interface_id)
+            print "\n\nINTERFACE_PARTNER=(%s)" % interface.partner
+            if interface.partner is not None:
+                self.fields['partner'].initial = interface.partner
+            else:
+                print "SETTING INITIAL TO 0"
+                self.fields['partner'].initial=0
 
 class AddAsset(BootstrapForm):
     class Meta:

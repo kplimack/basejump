@@ -32,16 +32,34 @@ def asset_edit(request, asset_id):
             return view(request, 'asset_edit', form.errors, asset_id)
     return view(request, 'asset_edit', None, asset_id)
 
-def interface_edit(request, interface_id):
-    if request == "POST":
-        interface = getInterfaces(interface_id)
+def getInterface(iface_pk):
+    print "Getting interface_by_id(%s)" % iface_pk
+    return Interface.objects.get(pk=iface_pk)
+
+def interface_edit(request, asset_id, interface_id):
+    print "calling GET_INTERFACE."
+    interface = getInterface(interface_id)
+    if request.method == "POST":    
         form = AddInterface(request.POST, instance=interface)
-        if form.is_valid():
-            form.save()
-        else:
-            return view(request, 'interface_edit', form.errors, interface_id)
+        try:
+            form.is_valid()
+        except:
+            pass
+        interface.name = form.cleaned_data['name']
+        interface.ip4 = form.cleaned_data['ip4']
+        interface.mac = form.cleaned_data['mac']
+        interface.vlan = form.cleaned_data['vlan']
+        interface.owner_id = asset_id
+        partner = form.cleaned_data['partner']
+        print "PARTNER=(%s)" % partner
+        if partner is not None:
+            interface_partner_id = partner
+        elif partner == 0:
+            interfaces.partner = None
+        interface.save()
+        return view(request, 'interface_edit', form.errors, interface.pk)
     else:
-        return view(request, 'asset_view')
+        return view(request, 'interface_edit', None, interface.pk)
 
 def view(request, route, form_errors=None, instance_id=None, assets=None):
     content_bag = get_common_content(request)
@@ -65,13 +83,15 @@ def view(request, route, form_errors=None, instance_id=None, assets=None):
         content_bag['form_action'] = 'invdb.views.asset_edit'
         content_bag['asset_id'] = asset.pk
         content_bag['submit_txt'] = "Save Asset"
-        content_bag['interface_form'] = AddInterface(owner=instance_id)
+        content_bag['interface_form'] = AddInterface(owner=instance_id, interface_id=asset.primary_interface.id)
         content_bag['interfaces'] = getInterfaces(owner=asset.pk)
         viewname="asset_edit"
     elif route == "interface_edit":
-        interface = getInterfaces(instance_id)
+        interface = getInterface(instance_id)
         print "EditInterface(%s)" % interface.pk
-        content_bag['form'] = EditInterface(instance=interface)
+        content_bag['form'] = AddInterface(instance=interface, owner=interface.owner.id, interface_id=interface.pk)
+        content_bag['asset_id'] = interface.owner.id
+        content_bag['interface_id'] = interface.pk
         content_bag['submit_txt'] = "Save Interface"
         viewname="interface_edit"
     elif route == 'asset_view':

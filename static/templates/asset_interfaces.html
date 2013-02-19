@@ -25,7 +25,7 @@
         <td></td>
         {% endif %}
         <td>
-          <a href=" url 'invdb.views.interface_edit' /{{ interface.pk }}"><i class="icon-pencil"></i></a>
+          <a href="{% url 'invdb.views.interface_edit' asset_id interface.pk %}"><i class="icon-pencil"></i></a>
           <a href="#myModal" role="button" data-toggle="modal"><i class="icon-remove"></i></a>
         </td>
       </tr>
