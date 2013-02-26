@@ -103,3 +103,7 @@ def runChecks(checks):
             results[check.name] = resultCode(fileOwner(path, None, group))
     return results
 
+def readLink(filepath):
+    if fileExists(filepath):
+        return os.readLink(filepath)
+    return None
