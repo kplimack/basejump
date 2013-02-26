@@ -2,6 +2,7 @@ django
 south
 mysql-python
 gunicorn
+gspread
 django-crispy-forms
 django-bootstrap
 django-bootstrap-toolkit
