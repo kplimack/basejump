@@ -3,6 +3,7 @@ south
 mysql-python
 gunicorn
 gspread
+ipaddr
 django-crispy-forms
 django-bootstrap
 django-bootstrap-toolkit
