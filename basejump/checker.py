@@ -35,6 +35,16 @@ def dirPerms(path, mode_octal):
     else:
         return False
 
+def linkExists(path):
+    try:
+        link_exists = os.path.islink(path)
+    except:
+        return False
+    if link_exists == True:
+        return True
+    else:
+        return False
+
 def fileExists(path):
     try:
         path_exists = os.path.exists(path)
@@ -105,5 +115,5 @@ def runChecks(checks):
 
 def readLink(filepath):
     if fileExists(filepath):
-        return os.readLink(filepath)
+        return os.readlink(filepath)
     return None

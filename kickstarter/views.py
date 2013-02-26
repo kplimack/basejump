@@ -250,7 +250,7 @@ def servers_kick(request):
         mac = asset.primary_interface.mac
         mac_file = BootFileName(mac)
         print "SETTING BOOTOPTION TO %s" % bootoption_id
-        if fileExists(mac_file):
+        if linkExists(mac_file):
             print "REMOVING OLD SYMLINK %s" % mac_file
             os.unlink(mac_file)
         if bootoption_id == "localboot":
