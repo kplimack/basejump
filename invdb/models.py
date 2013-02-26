@@ -43,6 +43,7 @@ class Role(models.Model):
 class Interface(models.Model):
     name = models.CharField(max_length=10, null=True, blank=True, default=None)
     ip4 = models.IPAddressField(unique=True, null=True, blank=True, default=None)
+    netmask = models.IPAddressField(unique=False, null=True, blank=True, default="255.255.255.0")
     vlan = models.IntegerField(max_length=4, null=True, blank=True, default='0')
     mac = models.CharField(max_length=12,unique=True, null=True, blank=True, default=None)
     owner = models.ForeignKey('Asset', null=True, blank=True, default=None)
@@ -55,12 +56,14 @@ class Interface(models.Model):
     def create(klass,
                interface_name,
                interface_ip4,
+               interface_netmask,
                interface_mac,
                interface_vlan,
                interface_owner=None):
         interface = klass(
             name=interface_name,
             ip4=interface_ip4,
+            netmask=interface_netmask,
             mac=interface_mac,
             vlan=interface_vlan,
             owner=interface_owner,
@@ -71,6 +74,7 @@ class Interface(models.Model):
     def create_full(klass,
                interface_name,
                interface_ip4,
+               interface_netmask,
                interface_mac,
                interface_vlan,
                interface_owner=None,
@@ -78,6 +82,7 @@ class Interface(models.Model):
         interface = klass(
             name=interface_name,
             ip4=interface_ip4,
+            netmask=interface_netmask,
             mac=interface_mac,
             vlan=interface_vlan,
             owner=interface_owner,

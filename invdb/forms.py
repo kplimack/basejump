@@ -129,6 +129,7 @@ class AddAsset(BootstrapForm):
                      "provision_date",
                      "primary_interface_name",
                      "primary_interface_ip4",
+                     "primart_interface_netmask",
                      "primary_interface_mac",
                      "primary_interface_vlan",
                      "primary_interface_partner",
@@ -158,6 +159,7 @@ class AddAsset(BootstrapForm):
     hostname = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
     primary_interface_name = forms.CharField(max_length=10, widget=forms.TextInput(attrs=styles['textbox']), initial="eth0")
     primary_interface_ip4 = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
+    primary_interface_netmask = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox'])),
     primary_interface_mac = forms.CharField(max_length=12, widget=forms.TextInput(attrs=styles['textbox']), required=False)
     primary_interface_vlan = forms.CharField(widget=forms.TextInput(attrs=styles['textbox']), initial="0")
     console = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), required=False)
@@ -167,3 +169,4 @@ class AddAsset(BootstrapForm):
     rack = forms.ModelChoiceField(queryset=Rack.objects.all(), required=False, empty_label="Disabled")
 #        rack_u = forms.ModelChoiceField()
 #        rack_u_size = forms.ModelChoiceField()
+

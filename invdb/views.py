@@ -39,7 +39,7 @@ def getInterface(iface_pk):
 def interface_edit(request, asset_id, interface_id):
     print "calling GET_INTERFACE."
     interface = getInterface(interface_id)
-    if request.method == "POST":    
+    if request.method == "POST":
         form = AddInterface(request.POST, instance=interface)
         try:
             form.is_valid()
@@ -47,6 +47,7 @@ def interface_edit(request, asset_id, interface_id):
             pass
         interface.name = form.cleaned_data['name']
         interface.ip4 = form.cleaned_data['ip4']
+        interface.netmask = form.cleaned_data['netmask']
         interface.mac = form.cleaned_data['mac']
         interface.vlan = form.cleaned_data['vlan']
         interface.owner_id = asset_id
@@ -149,6 +150,7 @@ def interface_add(request, asset_id):
         if asset:
             interface_name = form.cleaned_data['name']
             interface_ip4 = form.cleaned_data['ip4']
+            interface_netmask = form.cleaned_data['netmask']
             interface_mac = form.cleaned_data['mac']
             interface_vlan = form.cleaned_data['vlan']
             interface_owner = asset
@@ -158,6 +160,7 @@ def interface_add(request, asset_id):
             interface_partner = interface
             interface = Interface.create_full(interface_name,
                                          interface_ip4,
+                                         interface_netmask,
                                          interface_mac,
                                          interface_vlan,
                                          interface_owner,
@@ -208,6 +211,7 @@ def asset_add(request):
             asset_alt_id = form.cleaned_data['alt_id']
             asset_primary_interface_name = form.cleaned_data['primary_interface_name']
             asset_primary_interface_ip4 = form.cleaned_data['primary_interface_ip4']
+            asset_primart_interface_netmask = form.cleaned_data['primary_interface_netmask']
             asset_primary_interface_mac = form.cleaned_data['primary_interface_mac']
             asset_primary_interface_vlan = form.cleaned_data['primary_interface_vlan']
             asset_primary_interface_partner = form.cleaned_data['primary_interface_partner']
@@ -238,6 +242,7 @@ def asset_add(request):
             interface = Interface.create(
                 asset_primary_interface_name,
                 asset_primary_interface_ip4,
+                asset_primart_interface_netmask,
                 asset_primary_interface_mac,
                 asset_primary_interface_vlan,
                 asset,

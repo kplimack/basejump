@@ -6,6 +6,7 @@
       <tr>
         <th>Device</th>
         <th>IP Address</th>
+        <th>Netmask</th>
         <th>MAC Address</th>
         <th>VLAN</th>
         <th>Partner</th>
@@ -17,6 +18,7 @@
       <tr>
         <td>{{ interface.name }}</td>
         <td>{{ interface.ip4 }}</td>
+        <td>{{ interface.netmask }}</td>
         <td>{{ interface.mac }}</td>
         <td>{{ interface.vlan }}</td>
         {% if interface.partner %}

@@ -6,8 +6,8 @@ import datetime
 doc_name = 'Carpathia Buildsheet'
 sheet_name = "Build Info"
 sheet_num = 4
-email = "jake.plimack@gmail.com"
-password = ""
+email = "kyle.plimack@gmail.com"
+password = "exwlsusqonzckiwm" # one-time password for 2-step auth
 
 gc = gspread.login(email, password)
 wks = gc.open(doc_name).get_worksheet(sheet_num)
@@ -26,6 +26,7 @@ schema = {
     'serial': 12,
     'alt_id': 13,
     'eth0_ip': 22,
+    'eth0_netmask': 24,
     'eth0_vlan': 19,
     'eth0_mac': 26,
     'console': 22,
@@ -41,6 +42,7 @@ idiot = {
     'alt_id': 0,
     'eth0_mac': 0,
     'eth0_ip': 0,
+    'eth0_netmask': 0,
     'eth0_vlan': 0,
     'console': 10
 }
@@ -87,6 +89,7 @@ def index(request):
         interface = Interface.create(
             "eth0", # primary interface name
             n['eth0_ip'],
+            n['eth0_netmask'],
             n['eth0_mac'],
             n['eth0_vlan'],
             asset
