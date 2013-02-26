@@ -6,11 +6,8 @@ import datetime
 doc_name = 'Carpathia Buildsheet'
 sheet_name = "Build Info"
 sheet_num = 4
-email = "kyle.plimack@gmail.com"
-password = "exwlsusqonzckiwm" # one-time password for 2-step auth
-
-gc = gspread.login(email, password)
-wks = gc.open(doc_name).get_worksheet(sheet_num)
+email = ""
+password = ""
 
 # whoever decided to take form over function here really made this harder than it had to be
 first_row = 16
@@ -47,12 +44,11 @@ idiot = {
     'console': 10
 }
 
-incomplete_hosts = []
-SERVER = AssetType.objects.get(pk=1)
-PHYS_UNKNOWN = PhysicalStatusCode.objects.get(pk=1)
-LOGI_UNKNOWN = LogicalStatusCode.objects.get(pk=1)
-
 def index(request):
+    incomplete_hosts = []
+    SERVER = AssetType.objects.get(pk=1)
+    PHYS_UNKNOWN = PhysicalStatusCode.objects.get(pk=1)
+    LOGI_UNKNOWN = LogicalStatusCode.objects.get(pk=1)
     response = HttpResponse(content_type="text/plain")
 
     for row in range(first_row, last_row, blocksize):
@@ -108,5 +104,4 @@ def index(request):
     for e in incomplete_hosts:
         print " * %s" % e
         response.write(" * %s\n" % e)
-    print
     return response
