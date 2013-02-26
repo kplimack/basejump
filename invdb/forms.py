@@ -129,7 +129,7 @@ class AddAsset(BootstrapForm):
                      "provision_date",
                      "primary_interface_name",
                      "primary_interface_ip4",
-                     "primart_interface_netmask",
+                     "primary_interface_netmask",
                      "primary_interface_mac",
                      "primary_interface_vlan",
                      "primary_interface_partner",

@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% load url from future %}
+{% load extra_tags %}
 {% block content %}
 <h3>basejump dashboard</h3>
 <div class="row-fluid">
@@ -18,7 +19,7 @@
   {% if assettypes %}
   <ul>
   {% for assettype in assettypes %}
-  <li>{{ areatype.name }}: {{ assettype.count }}</li>
+  <li>{{ assettype.name }}: {{ at_counts|get_item:assettype.name }}</li>
   {% endfor %}
   </ul>
   {% endif %}

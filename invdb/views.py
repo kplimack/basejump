@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -17,9 +18,9 @@ def index(request):
 
 def asset_view(request, asset_type=None):
     if asset_type:
-        assets = Asset.objects.filter(asset_type__name__exact=asset_type)
+        assets = Asset.objects.filter(asset_type__name__exact=asset_type).order_by('hostname')
     else:
-        assets = Asset.objects.all()
+        assets = Asset.objects.all().order_by('hostname')
     return view(request, 'asset_view', None, None, assets)
 
 def asset_edit(request, asset_id):
@@ -62,6 +63,7 @@ def interface_edit(request, asset_id, interface_id):
     else:
         return view(request, 'interface_edit', None, interface.pk)
 
+@login_required
 def view(request, route, form_errors=None, instance_id=None, assets=None):
     content_bag = get_common_content(request)
     content_bag['form_errors'] = form_errors
@@ -98,6 +100,15 @@ def view(request, route, form_errors=None, instance_id=None, assets=None):
     elif route == 'asset_view':
         viewname = "gridview"
         content_bag['assets'] = assets
+    elif route == "home":
+        viewname = 'home'
+        content_bag['assets'] = Asset.objects.all().order_by('hostname')
+        content_bag['assettypes'] = AssetType.objects.all().order_by('name')
+        at_counts = {}
+        for at in content_bag['assettypes']:
+            cnt = Asset.objects.filter(asset_type=at).count()
+            at_counts[at.name] = cnt
+        content_bag['at_counts'] = at_counts
     else:
         viewname = route
     print "VIEWNAME=%s" % viewname
@@ -211,7 +222,7 @@ def asset_add(request):
             asset_alt_id = form.cleaned_data['alt_id']
             asset_primary_interface_name = form.cleaned_data['primary_interface_name']
             asset_primary_interface_ip4 = form.cleaned_data['primary_interface_ip4']
-            asset_primart_interface_netmask = form.cleaned_data['primary_interface_netmask']
+            asset_primary_interface_netmask = form.cleaned_data['primary_interface_netmask']
             asset_primary_interface_mac = form.cleaned_data['primary_interface_mac']
             asset_primary_interface_vlan = form.cleaned_data['primary_interface_vlan']
             asset_primary_interface_partner = form.cleaned_data['primary_interface_partner']
@@ -242,7 +253,7 @@ def asset_add(request):
             interface = Interface.create(
                 asset_primary_interface_name,
                 asset_primary_interface_ip4,
-                asset_primart_interface_netmask,
+                asset_primary_interface_netmask,
                 asset_primary_interface_mac,
                 asset_primary_interface_vlan,
                 asset,
