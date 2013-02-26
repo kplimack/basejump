@@ -24,6 +24,16 @@ class EditSetting(forms.ModelForm):
         super(EditSetting, self).__init__(*args, **kwargs)
         self.fields['permanent'].widget = forms.HiddenInput()
 
+class AddBootOption(forms.ModelForm):
+    class Meta:
+        model=BootOption
+    def __init__(self, *args, **kwargs):
+        super(AddBootOption, self).__init__(*args, **kwargs)
+        self.fields['name'].widget = forms.TextInput(attrs=styles['textbox'])
+        self.fields['label'].widget = forms.TextInput(attrs=styles['textbox'])
+        self.fields['kernel'].widget = forms.TextInput(attrs=styles['textbox'])
+        self.fields['append'].widget = forms.TextInput(attrs=styles['textbox'])
+
 # class EditAsset(forms.ModelForm):
 #     class Meta:
 #         model=Asset

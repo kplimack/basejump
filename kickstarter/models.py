@@ -61,3 +61,23 @@ class BootOption(models.Model):
             kernel=option_kernel,
             append=option_append)
         return bootoption
+
+class KickStart(models.Model):
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=50, unique=True)
+    conf = models.TextField(default=None, null=True, blank=True)
+    is_default = models.BooleanField(default=False)
+
+    @classmethod
+    def create(klass,
+               kickstart_name,
+               kickstart_conf,
+               kickstart_is_default
+           ):
+        kickstart=klass(
+            name = kickstart_name,
+            conf = kickstart_conf,
+            is_default = kickstart_is_default)
+        return kickstart

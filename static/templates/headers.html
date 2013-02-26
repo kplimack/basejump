@@ -103,4 +103,21 @@
           });
       });
     </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#btn_kick').click(function(e) {
+          asset_id = $(this).attr("value")
+          console.log("BTN CLICKED FOR ASSET:" + asset_id);
+          $.get("BootOptions/get/assetid/" + asset_id, function(data) {
+            $('#current_pxe_option').text(data);
+            $('#asset_id').val(asset_id)
+          });
+        });
+      });
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#select_pxe_option')
+      });
+    </script>
   </head>

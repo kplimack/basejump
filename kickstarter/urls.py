@@ -11,10 +11,17 @@ admin.autodiscover()
 urlpatterns = patterns('kickstarter.views',
                        url(r'^$', 'index', name='index'),
                        url(r'^kickme/(?P<opsys>\w+)/(?P<release>.+)/(?P<arch>\w+)$', 'kickme', name='kickme'),
-                       url(r'^kick$', 'kick', name='kick'),
                        url(r'^servers$', 'server_view', name='server_view'),
                        url(r'^settings$', 'settings_view', name='settings_view'),
+                       url(r'^servers/kick$', 'servers_kick', name='servers_kick'),
+                       url(r'^BootOptions$', 'bootoptions_view', name='bootoptions_view'),
+                       url(r'^BootOptions/add$', 'bootoptions_add', name='bootoptions_add'),
+                       url(r'^BootOptions/edit$', 'bootoptions_edit', name='bootoptions_edit'),
+                       url(r'^BootOptions/get/assetid/(?P<asset_id>\w+)$', 'bootoptions_get_assetid', name='bootoptions_get_assetid'),
+                       url(r'^BootOptions/get/macaddr/(?P<macaddr>\w+)$', 'bootoptions_get_macaddr', name='bootoptions_get_macaddr'),
                        url(r'^settings/add$', 'settings_add', name='settings_add'),
+                       url(r'^chef/validator$', 'chef_validator', name='chef_validator'),
+                       url(r'^chef/client$', 'chef_client', name='chef_client')
                    )
 
 urlpatterns += staticfiles_urlpatterns()

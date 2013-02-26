@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% load extra_tags %}
+{% block content %}
+{% load bootstrap_toolkit %}
+</div>
+<div class="well">
+  <h3>Boot Options</h3>
+  <div class="btn-toolbar">
+    <form method="LINK" ACTION="/invdb/asset_add">
+      <a href="#myModal" role="button" class="btn btn-small btn-primary" data-toggle="modal">New Boot Option</a>
+    </form>
+  </div>
+</div>
+<table class="table">
+  {% for bo in bootoptions %}
+  <tr>
+    <th width="150px">{{ bo.name }}</th>
+    <td>
+      <div class="well">
+        <table>
+          <tr>
+            <th>Label</th>
+            <td>{{ bo.label }}</td>
+          </tr>
+          <tr>
+            <th>Append</th>
+            <td>{{ bo.append }}</td>
+          </tr>
+          <tr>
+            <th>Kernel</th>
+            <td>{{ bo.kernel }}</td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">New Boot Option</h3>
+  </div>
+  <div class="modal-body">
+    <form class="form" method="POST" action="{% url 'kickstarter.views.bootoptions_add' %}">
+      {{ form }}
+      {% csrf_token %}
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <input type="submit" value="Add Setting" class="btn btn-success"></input>
+  </div>
+  </form>
+
+
+  {% endblock %}
