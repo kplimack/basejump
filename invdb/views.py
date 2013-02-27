@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth.models import *
@@ -141,6 +141,18 @@ def menutize(boo, pluralize=False, section='assets'):
 
         menu.append(menuitem)
     return menu
+
+def get_console(request, ahostname):
+    try:
+        asset = Asset.objects.get(hostname=ahostname)
+    except:
+        asset = None
+    response = HttpResponse()
+    if asset is not None:
+        response.write("%s\n" % asset.console )
+    else:
+        response.write("None\n")
+    return HttpResponse(response, mimetype="text/plain")
 
 def getAssetTypes():
     assettypes = AssetType.objects.all().order_by('name')

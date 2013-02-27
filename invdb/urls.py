@@ -17,6 +17,7 @@ urlpatterns = patterns('invdb.views',
                        url(r'^assets/edit/(?P<asset_id>\w+)/interface_add$', 'interface_add', name='interface_add'),
                        url(r'^assets$', 'asset_view', name='asset_view'),
                        url(r'^assets/(?P<asset_type>\w+)', 'asset_view', name='asset_view'),
+                       url(r'^console/(?P<ahostname>.+)$', 'get_console', name='get_console'),
 #                       url(r'^assets/edit/(?P<asset_type>\w+)$', 'asset_edit', name='asset_edit'),
                    )
 
