@@ -15,9 +15,8 @@ def index(request):
             'form': LoginForm(),
     },                                  context_instance=RequestContext(request))
     else:
-        user = request.user
-        return render_to_response('index.html',
-                                  context_instance=RequestContext(request))
+        return HttpResponseRedirect(reverse('invdb.views.index'))
+
 def login_user(request):
     msg = "Please login below..."
     username = password = ''

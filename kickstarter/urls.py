@@ -10,6 +10,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('kickstarter.views',
                        url(r'^$', 'index', name='index'),
+                       url(r'^ksconfig/(?P<opsys>\w+)/(?P<release>.+)/(?P<arch>\w+)/(?P<hostname>.+)$', 'get_ksconfig', name='get_ksconfig'),
                        url(r'^kickme/(?P<opsys>\w+)/(?P<release>.+)/(?P<arch>\w+)$', 'kickme', name='kickme'),
                        url(r'^servers$', 'server_view', name='server_view'),
                        url(r'^settings$', 'settings_view', name='settings_view'),

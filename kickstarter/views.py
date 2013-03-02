@@ -104,7 +104,12 @@ def getSetting(setting_key):
     settings = kssettings.objects.get(name__exact=setting_key)
     return settings.setting
 
-def kickme(request, opsys, release, arch):
+def get_ksconfig(request, hostname, opsys, release, arch):
+    asset = Asset.objects.get(hostname=hostname)
+    print "Getting ksconfig for %s" % asset.hostname
+    return kickme(request, opsys, release, arch, asset)
+
+def kickme(request, opsys, release, arch, asset=None):
     masks = {
         '255.255.255.255': 32,
         '255.255.255.252': 30,
@@ -140,41 +145,44 @@ def kickme(request, opsys, release, arch):
     debugging =  "Operating System: %s\nRelease: %s\nArch: %s\n" % (opsys, release, arch)
     log = open('kicker.log', 'w')
     log.write("%s" % request)
-    try:
-        CLIENT_MAC = request.META['HTTP_X_RHN_PROVISIONING_MAC_0']
-    except KeyError:
-        response.write("NO MAC ADDRES SENT IN REQUEST\n")
-        CLIENT_MAC = 'eth0 08:00:27:B6:8B:32'
-        #return response
-    CLIENT_MAC = CLIENT_MAC.partition(' ')[2].replace(':','')
-    try:
-        asset = Asset.objects.get(primary_interface__mac=CLIENT_MAC)
-    except:
-        response.write("Could not find asset with MAC: '%s''\n" % CLIENT_MAC)
-        return response
-    print "ASSET INFO: %s" % asset.primary_interface.ip4
-    CLIENT_IP = asset.primary_interface.ip4
-    if CLIENT_IP is not None:
-        response.write("NO CLIENT IP IN DATABASE\n")
-        if asset.hostname is None:
-            response.write("CLIENT_HOSTNAME NOT DEFINED FOR INTEFFACE WITH MAC: %s\n" % CLIENT_MAC)
+    if asset is None:
+        try:
+            CLIENT_MAC = request.META['HTTP_X_RHN_PROVISIONING_MAC_0']
+        except KeyError:
+            response.write("NO MAC ADDRES SENT IN REQUEST\n")
             return response
-        CLIENT_NETMASK=asset.primary_interface.netmask
-        addr = ipaddr.IPNetwork(CLIENT_IP + "/" + masks[CLIENT_NETMASK])
-        CLIENT_GATEWAY = ipaddr.network + 1
-        CLIENT_NS=getSetting('PXE_NS1')
-        ksconfig = open('kickstarter/ksconfigs/ksconfig', 'r').read()
-        ksconfig = ksconfig.replace('__NETWORK__', '--bootproto=static --ip=' + CLIENT_IP + ' --netmask=' + CLIENT_NETMASK + ' --gateway=' + CLIENT_GATEWAY + ' --nameserver=' + CLIENT_NS)
-        REPO = getSetting('REPO_URL')
-        REPO = REPO.replace('__OS__', opsys)
-        REPO = REPO.replace('__RELEASE__', release)
-        REPO = REPO.replace('__ARCH__', arch)
-        ksconfig = ksconfig.replace('__REPO_URL__', REPO)
-        ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
-        log.write("Returning the following ksconfig:\n%s" % ksconfig)
-        response.write(ksconfig)
+        CLIENT_MAC = CLIENT_MAC.partition(' ')[2].replace(':','')
+        try:
+            asset = Asset.objects.get(primary_interface__mac=CLIENT_MAC)
+        except:
+            response.write("Could not find asset with MAC: '%s'\n" % CLIENT_MAC)
+            return response
     else:
-        response.write("IP ADDRESS FOR (%s) NOT FOUND IN INVENTORY:\n" % CLIENT_MAC)
+        CLIENT_MAC = asset.primary_interface.mac
+    CLIENT_IP = asset.primary_interface.ip4
+    if CLIENT_IP is None:
+        response.write("NO CLIENT IP IN DATABASE\n")
+        return response
+    if asset.hostname is None:
+        response.write("CLIENT_HOSTNAME NOT DEFINED FOR INTEFFACE WITH MAC: %s\n" % CLIENT_MAC)
+        return response
+    CLIENT_NETMASK=asset.primary_interface.netmask
+    print "ASSET INFO: %s/%s(%s)/%s" % (CLIENT_IP, CLIENT_NETMASK, masks[CLIENT_NETMASK], CLIENT_MAC)
+    addr = ipaddr.IPNetwork(str(CLIENT_IP) + "/" + str(masks[CLIENT_NETMASK]))
+    CLIENT_GATEWAY = addr.network + 1
+    CLIENT_NS=getSetting('PXE_NS1')
+    ksconfig = open('kickstarter/ksconfigs/ksconfig', 'r').read()
+    ksconfig = ksconfig.replace('__NETWORK__', '--bootproto=static --ip=' + str(CLIENT_IP) + ' --netmask=' + str(CLIENT_NETMASK) + ' --gateway=' + str(CLIENT_GATEWAY) + ' --nameserver=' + str(CLIENT_NS))
+    REPO = getSetting('REPO_URL')
+    REPO = REPO.replace('__OS__', opsys)
+    REPO = REPO.replace('__RELEASE__', release)
+    REPO = REPO.replace('__ARCH__', arch)
+    ksconfig = ksconfig.replace('__REPO_URL__', REPO)
+    ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
+    log.write("Returning the following ksconfig:\n%s" % ksconfig)
+    response.write(ksconfig)
+    #else:
+    #    response.write("IP ADDRESS FOR (%s) NOT FOUND IN INVENTORY:\n" % CLIENT_MAC)
     return response
 
 
