@@ -1,0 +1,131 @@
+install
+lang en_US.UTF-8
+keyboard us
+timezone America/New_York
+skipx
+text
+network __NETWORK__
+url --url __REPO_URL__
+rootpw fubar
+reboot
+firewall --disabled
+selinux --disabled
+authconfig --enableshadow --enablemd5
+
+
+zerombr yes
+clearpart  --all --initlabel
+bootloader --location=mbr --append 'selinux=0 console=ttyS0,115200n8'
+part /boot --fstype ext3 --size=200   --asprimary
+part /     --fstype ext3 --size=8192  --asprimary
+part swap                --size=4096  --asprimary
+part /tmp  --fstype ext3 --size=4096
+part /usr  --fstype ext3 --size=16384
+part /home --fstype ext3 --size=4096 --grow
+part /var  --fstype ext3 --size=51200 --grow
+
+%packages
+screen
+vim-enhanced
+emacs
+e2fsprogs
+ntp
+curl
+wget
+telnet
+-irda-utils.KS_ARCH
+-prelink.KS_ARCH
+-logwatch.KS_ARCH
+-finger.KS_ARCH
+-isdn4k-utils.KS_ARCH
+-ppp.KS_ARCH
+-rdate.KS_ARCH
+-rdist.KS_ARCH
+-rp-pppoe.KS_ARCH
+-rsh.KS_ARCH
+-wvdial.KS_ARCH
+-ypbind.KS_ARCH
+-yp-tools.KS_ARCH
+-bluez-hcidump.KS_ARCH
+-bluez-utils.KS_ARCH
+-bluez-libs.KS_ARCH
+-bluez-pin.KS_ARCH
+-vnc-server.KS_ARCH
+-selinux-policy-targeted.KS_ARCH
+-policycoreutils.KS_ARCH
+-setools.KS_ARCH
+-xorg-x11-Mesa-libGL.KS_ARCH
+-NetworkManager.KS_ARCH
+-caching-nameserver.noarch
+-valgrind.i386
+-valgrind-callgrind.i386
+-doxygen.KS_ARCH
+-ckermit.KS_ARCH
+-gcc-gfortran.KS_ARCH
+-libgfortran.KS_ARCH
+-alsa-utils.KS_ARCH
+-anacron.KS_ARCH
+-pcmcia-cs.KS_ARCH
+-system-config-soundcard.noarch
+-firstboot.noarch
+-selinux-policy-targeted.noarch
+
+%post
+chvt 3
+echo -e \\a
+
+(
+  /etc/init.d/ntpd stop
+  /usr/sbin/ntpdate -v -u 0.pool.ntp.org
+  hwclock --systohc
+  rpm --import /usr/share/rhn/*KEY*
+  rm -rf /etc/yum.repos.d/*
+
+  yum -y remove selinux-policy-targeted || :
+  yum -y remove anacron pcmcia-cs NetworkManager || :
+
+    yum -y update yum
+  yum -y update rpm rpm-libs || :
+  yum -y update mkinitrd || :
+  yum -y update kernel-smp kernel-smp-devel || :
+  yum -y update glibc || :
+  rpm -e $(rpm -q kernel) || :
+
+  # prep us for Chef
+  rpm -Uvh http://rbel.frameos.org/rbel6
+  yum install ruby ruby-devel ruby-ri ruby-rdoc ruby-shadow gcc gcc-c++ automake autoconf make curl dmidecode
+  cd /tmp
+  curl -O http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
+  tar zxf rubygems-1.8.10.tgz
+  cd rubygems-1.8.10
+  ruby setup.rb --no-format-executable
+  gem install chef --no-ri --no-rdoc
+
+  # now get the Chef validation key
+  mkdir -p /etc/chef
+  wget -q http://__BASEJUMP_URL__/kickstarter/chef/validator -O /etc/chef/validation.pem
+  wget -q http://__BASEJUMP_URL__/kickstarter/chef/client -O /etc/chef/client.rb
+
+  # turn off/on some services
+  chkconfig --level 345 ntpd on
+  chkconfig yum off
+  chkconfig --level 345 cups off || :
+  chkconfig --level 345 cups-config-daemon off || :
+  chkconfig --level 345 cpuspeed off || :
+  chkconfig --level 345 atd off || :
+  chkconfig --level 345 gpm off || :
+  chkconfig --level 345 mDNSResponder off || :
+  chkconfig --level 345 nifd off || :
+  chkconfig --level 345 named off || :
+
+  date > /etc/birthday
+
+#!/bin/sh
+/etc/init.d/ntpd stop
+/usr/sbin/ntpdate -v -u 0.pool.ntp.org
+/etc/init.d/ntpd start
+
+) 2>&1 | tee /root/ks-postinstall.log
+
+echo -e \\a
+exit 0
