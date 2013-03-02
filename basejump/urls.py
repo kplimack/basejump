@@ -8,7 +8,8 @@ admin.autodiscover()
 #handler404 = views.handler404
 
 urlpatterns = patterns('',
-                       url(r'^$', include('invdb.urls')),
+                       url(r'^$', include('authenticator.urls')),
+                       url(r'^/$', include('authenticator.urls')),
                        url('^', include('authenticator.urls')),
                        url('^invdb/', include('invdb.urls')),
                        url('^importer/', include('importer.urls')),

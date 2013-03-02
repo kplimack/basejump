@@ -12,7 +12,8 @@ from invdb.forms import *
 
 def index(request):
     if not request.user.is_authenticated():
-        return view(request, 'login')
+        content_bag = get_common_content(request)
+        return render_to_response('login.html', content_bag, context_instance=RequestContext(request))
     else:
         return view(request, 'home')
 

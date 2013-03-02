@@ -8,7 +8,9 @@ from invdb.views import *
 from authenticator.forms import *
 
 def index(request):
+    print "ADFD"
     if not request.user.is_authenticated():
+
         return render_to_response('login.html', {
             'form': LoginForm(),
     },                                  context_instance=RequestContext(request))
@@ -20,6 +22,7 @@ def login_user(request):
     msg = "Please login below..."
     username = password = ''
     success = False
+    print "FAVCE"
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -41,6 +44,11 @@ def login_user(request):
                 'username': username,
                 'form': LoginForm(),
             }, context_instance=RequestContext(request))
+    else:
+        print "DURKLA"
+        return render_to_response('login.html', {
+            'form': LoginForm(),
+        }, context_instance=RequestContext(request))
 
 def logout_user(request):
     logout(request)
