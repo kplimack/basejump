@@ -147,7 +147,7 @@ def kickme(request, opsys, release, arch, asset=None):
     log.write("%s" % request)
     if asset is None:
         try:
-            CLIENT_MAC = request.META['HTTP_X_RHN_PROVISIONING_MAC_0']
+            CLIENT_MAC = request.META['HTTP_X_RHN_PROVISIONING_MAC_1'] # em1 = eth0, appareDntly
         except KeyError:
             response.write("NO MAC ADDRES SENT IN REQUEST\n")
             return response
