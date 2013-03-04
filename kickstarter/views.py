@@ -154,11 +154,12 @@ def kickme(request, opsys, release, arch, asset=None):
             # 'HTTP_X_RHN_PROVISIONING_MAC_3': 'p1p3 A0:36:9F:11:E4:A2',
             # 'HTTP_X_RHN_PROVISIONING_MAC_4': 'p1p1 A0:36:9F:11:E4:A0',
             # 'HTTP_X_RHN_PROVISIONING_MAC_5': 'p1p2 A0:36:9F:11:E4:A1',
-            ifname = asset.primary_interface.name
-            print "SEARCHING FOR MACADDR OF %s" % ifname
+            #ifname = asset.primary_interface.name
+            #print "SEARCHING FOR MACADDR OF %s" % ifname
+            ifname = "eth0"
             for i in range(0, 5):
                 cur_mac = request.META['HTTP_X_RHN_PROVISIONING_MAC_' + str(i)]
-                print "CHECKING"
+                print "CHECKING for %s" % cur_mac
                 if ifname in str(cur_mac):
                     CLIENT_MAC = str(cur_mac)
         except KeyError:

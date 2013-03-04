@@ -15,7 +15,7 @@ authconfig --enableshadow --enablemd5
 
 zerombr yes
 clearpart  --all --initlabel
-bootloader --location=mbr --append 'selinux=0 console=ttyS0,115200n8'
+bootloader --location=mbr --append 'biosdevname=0 selinux=0 console=ttyS0,115200n8'
 part /boot --fstype ext3 --size=200   --asprimary
 part /     --fstype ext3 --size=8192  --asprimary
 part swap                --size=4096  --asprimary
