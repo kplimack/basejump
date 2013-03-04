@@ -147,7 +147,20 @@ def kickme(request, opsys, release, arch, asset=None):
     log.write("%s" % request)
     if asset is None:
         try:
-            CLIENT_MAC = request.META['HTTP_X_RHN_PROVISIONING_MAC_1'] # em1 = eth0, appareDntly
+            # The interface names are not consistant with mac_<index>, you'll have to check each
+            # 'HTTP_X_RHN_PROVISIONING_MAC_0': 'em1 90:B1:1C:28:CA:F1',
+            # 'HTTP_X_RHN_PROVISIONING_MAC_1': 'p1p4 A0:36:9F:11:E4:A3',
+            # 'HTTP_X_RHN_PROVISIONING_MAC_2': 'em2 90:B1:1C:28:CA:F2',
+            # 'HTTP_X_RHN_PROVISIONING_MAC_3': 'p1p3 A0:36:9F:11:E4:A2',
+            # 'HTTP_X_RHN_PROVISIONING_MAC_4': 'p1p1 A0:36:9F:11:E4:A0',
+            # 'HTTP_X_RHN_PROVISIONING_MAC_5': 'p1p2 A0:36:9F:11:E4:A1',
+            ifname = asset.primary_interface.name
+            print "SEARCHING FOR MACADDR OF %s" % ifname
+            for i in range(0, 5):
+                cur_mac = request.META['HTTP_X_RHN_PROVISIONING_MAC_' + str(i)]
+                print "CHECKING"
+                if ifname in str(cur_mac):
+                    CLIENT_MAC = str(cur_mac)
         except KeyError:
             response.write("NO MAC ADDRES SENT IN REQUEST\n")
             return response
