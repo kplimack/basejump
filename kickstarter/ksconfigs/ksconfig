@@ -120,11 +120,6 @@ echo -e \\a
 
   date > /etc/birthday
 
-#!/bin/sh
-/etc/init.d/ntpd stop
-/usr/sbin/ntpdate -v -u 0.pool.ntp.org
-/etc/init.d/ntpd start
-
 ) 2>&1 | tee /root/ks-postinstall.log
 
 echo -e \\a
