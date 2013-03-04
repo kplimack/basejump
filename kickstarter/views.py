@@ -156,7 +156,7 @@ def kickme(request, opsys, release, arch, asset=None):
             # 'HTTP_X_RHN_PROVISIONING_MAC_5': 'p1p2 A0:36:9F:11:E4:A1',
             #ifname = asset.primary_interface.name
             #print "SEARCHING FOR MACADDR OF %s" % ifname
-            ifname = "eth0"
+            ifname = "em1"
             for i in range(0, 5):
                 cur_mac = request.META['HTTP_X_RHN_PROVISIONING_MAC_' + str(i)]
                 print "CHECKING for %s" % cur_mac
@@ -165,6 +165,11 @@ def kickme(request, opsys, release, arch, asset=None):
         except KeyError:
             response.write("NO MAC ADDRES SENT IN REQUEST\n")
             return response
+        if CLIENT_MAC is None:
+            msg = "MAC ADDR NOT FOUND IN REQUEST"
+            response.write(msg)
+            print "%s" % msg
+            return msg
         CLIENT_MAC = CLIENT_MAC.partition(' ')[2].replace(':','')
         try:
             asset = Asset.objects.get(primary_interface__mac=CLIENT_MAC)
