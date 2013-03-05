@@ -191,7 +191,7 @@ def kickme(request, opsys, release, arch, asset=None):
     CLIENT_GATEWAY = addr.network + 1
     CLIENT_NS=getSetting('PXE_NS1')
     ksconfig = open('kickstarter/ksconfigs/ksconfig', 'r').read()
-    ksconfig = ksconfig.replace('__NETWORK__', '--bootproto=static --ip=' + str(CLIENT_IP) + ' --netmask=' + str(CLIENT_NETMASK) + ' --gateway=' + str(CLIENT_GATEWAY) + ' --nameserver=' + str(CLIENT_NS))
+    ksconfig = ksconfig.replace('__NETWORK__', '--bootproto=static --ip=' + str(CLIENT_IP) + ' --netmask=' + str(CLIENT_NETMASK) + ' --gateway=' + str(CLIENT_GATEWAY) + ' --nameserver=' + str(CLIENT_NS) + ' --hostname ' + str(asset.hostname)
     REPO = getSetting('REPO_URL')
     REPO = REPO.replace('__OS__', opsys)
     REPO = REPO.replace('__RELEASE__', release)
