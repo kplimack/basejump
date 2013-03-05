@@ -126,3 +126,5 @@ echo -e \\a
 echo -e \\a
 chvt 1
 exit 0
+
+%end
