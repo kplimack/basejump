@@ -71,6 +71,7 @@ telnet
 -selinux-policy-targeted.noarch
 
 %post
+exec < /dev/tty3 > /dev/tty3
 chvt 3
 echo -e \\a
 
@@ -123,4 +124,5 @@ echo -e \\a
 ) 2>&1 | tee /root/ks-postinstall.log
 
 echo -e \\a
+chvt 1
 exit 0
