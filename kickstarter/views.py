@@ -208,7 +208,7 @@ def kickme(request, opsys, release, arch, asset=None):
 def get_repo(request, reponame):
     if ".repo" in reponame:
         filename = "repos/" + reponame
-        returnFile(request, filename)
+        return returnFile(request, filename)
     else:
         response = HttpResponse(content_type="text/plain")
         msg = "Not a valid repo\n"
@@ -220,7 +220,6 @@ def returnFile(request, filename):
     import os.path
     import mimetypes
     mimetypes.init()
-    print "TRYING TO SERVE: %s" % filename
     try:
         file_path = settings.PROJECT_DIR + '/kickstarter/' + filename
         print "FILEPATH TO SERVE: %s" % file_path
@@ -231,7 +230,10 @@ def returnFile(request, filename):
         if mime_type_guess is not None:
             response = HttpResponse(fsock, mimetype=mime_type_guess[0])
             response['Content-Disposition'] = 'attachment; filename=' + file_name
-    except IOError:
+        else:
+            response = HttpResponse(content_type="text/plain")
+            response.write(fsock)
+    except:
         response = HttpResponseNotFound()
     return response
 
