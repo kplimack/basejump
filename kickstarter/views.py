@@ -204,6 +204,15 @@ def kickme(request, opsys, release, arch, asset=None):
     #    response.write("IP ADDRESS FOR (%s) NOT FOUND IN INVENTORY:\n" % CLIENT_MAC)
     return response
 
+def get_repo(request, reponame):
+    if ".repo" in reponame:
+        returnFile(request, filename)
+    else:
+        response = HttpResponse(content_type="text/plain")
+        msg = "Not a valid repo\n"
+        print "%s" % msg
+        response.write(msg)
+        return response
 
 def returnFile(request, filename):
     import os.path
