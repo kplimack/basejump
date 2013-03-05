@@ -23,7 +23,7 @@ urlpatterns = patterns('kickstarter.views',
                        url(r'^settings/add$', 'settings_add', name='settings_add'),
                        url(r'^chef/validator$', 'chef_validator', name='chef_validator'),
                        url(r'^chef/client$', 'chef_client', name='chef_client'),
-                       url(r'^GetRepo/(?P<reponame>\w+)', 'get_repo', name='get_repo')
+                       url(r'^GetRepo/(?P<reponame>.+)$', 'get_repo', name='get_repo')
                    )
 
 urlpatterns += staticfiles_urlpatterns()
