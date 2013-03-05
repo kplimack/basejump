@@ -80,21 +80,21 @@ echo -e \\a
   /usr/sbin/ntpdate -v -u 0.pool.ntp.org
   hwclock --systohc
   rpm --import /usr/share/rhn/*KEY*
-  rm -rf /etc/yum.repos.d/*
+  #rm -rf /etc/yum.repos.d/*
 
   yum -y remove selinux-policy-targeted || :
   yum -y remove anacron pcmcia-cs NetworkManager || :
 
-    yum -y update yum
-  yum -y update rpm rpm-libs || :
-  yum -y update mkinitrd || :
-  yum -y update kernel-smp kernel-smp-devel || :
-  yum -y update glibc || :
-  rpm -e $(rpm -q kernel) || :
+  #yum -y update yum
+  #yum -y update rpm rpm-libs || :
+  #yum -y update mkinitrd || :
+  #yum -y update kernel-smp kernel-smp-devel || :
+  #yum -y update glibc || :
+  #rpm -e $(rpm -q kernel) || :
 
   # prep us for Chef
   rpm -Uvh http://rbel.frameos.org/rbel6
-  yum install ruby ruby-devel ruby-ri ruby-rdoc ruby-shadow gcc gcc-c++ automake autoconf make curl dmidecode
+  yum install -y ruby ruby-devel ruby-ri ruby-rdoc ruby-shadow gcc gcc-c++ automake autoconf make curl dmidecode
   cd /tmp
   curl -O http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
   tar zxf rubygems-1.8.10.tgz
