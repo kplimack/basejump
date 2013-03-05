@@ -70,11 +70,14 @@ def fileOwner(path, owner=None, group=None):
         else:
             retCode = True
             if owner is not None and owner is not user_name:
+                print "fileOwner - Failed for bad owner"
                 retCode = False
             if group is not None and group is not group_name:
+                print "fileOwner - Failed for bad group"
                 retCode = False
             return retCode
     else:
+        print "fileOwner - Failed for fileDoesNotExist"
         return False
 
 def checkMode(file, mode=None):
