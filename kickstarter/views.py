@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -198,6 +198,7 @@ def kickme(request, opsys, release, arch, asset=None):
     REPO = REPO.replace('__ARCH__', arch)
     ksconfig = ksconfig.replace('__REPO_URL__', REPO)
     ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
+    ksconfig = ksconfig.replace('__ARCH__', arch)
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
     response.write(ksconfig)
     #else:
@@ -206,6 +207,7 @@ def kickme(request, opsys, release, arch, asset=None):
 
 def get_repo(request, reponame):
     if ".repo" in reponame:
+        filename = "repos/" + filename
         returnFile(request, filename)
     else:
         response = HttpResponse(content_type="text/plain")
