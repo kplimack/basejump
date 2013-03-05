@@ -207,7 +207,7 @@ def kickme(request, opsys, release, arch, asset=None):
 
 def get_repo(request, reponame):
     if ".repo" in reponame:
-        filename = "repos/" + filename
+        filename = "repos/" + reponame
         returnFile(request, filename)
     else:
         response = HttpResponse(content_type="text/plain")
