@@ -220,8 +220,10 @@ def returnFile(request, filename):
     import os.path
     import mimetypes
     mimetypes.init()
+    print "TRYING TO SERVE: %s" % filename
     try:
         file_path = settings.PROJECT_DIR + '/kickstarter/' + filename
+        print "FILEPATH TO SERVE: %s" % file_path
         fsock = open(file_path,"r")
         file_name = os.path.basename(file_path)
         file_size = os.path.getsize(file_path)
