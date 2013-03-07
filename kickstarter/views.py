@@ -146,6 +146,7 @@ def kickme(request, opsys, release, arch, asset=None):
     log = open('kicker.log', 'w')
     log.write("%s" % request)
     if asset is None:
+        CLIENT_MAC = None
         try:
             # The interface names are not consistant with mac_<index>, you'll have to check each
             # 'HTTP_X_RHN_PROVISIONING_MAC_0': 'em1 90:B1:1C:28:CA:F1',
@@ -291,6 +292,7 @@ def servers_kick(request):
         asset = Asset.objects.get(pk=asset_id)
         mac = asset.primary_interface.mac
         mac_file = BootFileName(mac)
+        mac_file = "01-" + mac_file
         print "SETTING BOOTOPTION TO %s" % bootoption_id
         if linkExists(mac_file):
             print "REMOVING OLD SYMLINK %s" % mac_file
