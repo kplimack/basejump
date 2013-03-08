@@ -248,7 +248,7 @@ def chef_client(request):
 def BootFileName(mac):
     tftp_root = getSetting('TFTP_ROOT')
     pxe_root = tftp_root + '/pxelinux.cfg'
-    mac_pxe_file = pxe_root + '/' + re.sub("(.{2})", "\\1-", mac, re.DOTALL)[:17]
+    mac_pxe_file = pxe_root + '/01-' + re.sub("(.{2})", "\\1-", mac, re.DOTALL)[:17]
     return mac_pxe_file
 
 def checkBootOption(asset_id):
@@ -292,7 +292,6 @@ def servers_kick(request):
         asset = Asset.objects.get(pk=asset_id)
         mac = asset.primary_interface.mac
         mac_file = BootFileName(mac)
-        mac_file = "01-" + mac_file
         print "SETTING BOOTOPTION TO %s" % bootoption_id
         if linkExists(mac_file):
             print "REMOVING OLD SYMLINK %s" % mac_file
