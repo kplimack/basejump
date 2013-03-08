@@ -200,7 +200,7 @@ def kickme(request, opsys, release, arch, asset=None):
     ksconfig = ksconfig.replace('__REPO_URL__', REPO)
     ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
     ksconfig = ksconfig.replace('__ARCH__', arch)
-    ksconfig = ksconfig.replace('__ASSET_ID__', asset.pk)
+    ksconfig = ksconfig.replace('__ASSET_ID__', str(asset.id)
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
     response.write(ksconfig)
     #else:
