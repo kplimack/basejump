@@ -200,6 +200,7 @@ def kickme(request, opsys, release, arch, asset=None):
     ksconfig = ksconfig.replace('__REPO_URL__', REPO)
     ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
     ksconfig = ksconfig.replace('__ARCH__', arch)
+    ksconfig = ksconfig.replace('__ASSET_ID__', asset.pk)
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
     response.write(ksconfig)
     #else:
@@ -308,6 +309,28 @@ def servers_kick(request):
         return HttpResponse("GOOD:\n%s" % request.POST, mimetype="text/plain")
     else:
         return HttpResponse(status=204)
+
+def servers_release(request, asset_id):
+    response = HttpResponse(content_type="text/plain")
+    try:
+        asset=Asset.objects.get(pk=asset_id)
+    except:
+        msg = "ASSET(%s) NOT FOUND TO RELEASE" % asset_id
+        print "%s" % msg
+        response.write("%s\n" % msg)
+        return response
+    mac = asset.primary_interface.mac
+    mac_file = BootFileName(mac)
+    if fileExists(mac_file):
+        msg = "REMOVING MAC_FILE(%s)" % mac_file
+        response.write("%s\n" % msg)
+        print "%s" % msg
+        os.remove(mac_file)
+    else:
+        msg = "FileNotFound MAC_FILE(%s)" % mac_file
+        response.write("%s\n" % msg)
+        print "%s" % msg
+    return response
 
 def returnJSON(to_json):
     return HttpResponse(simplejson.dumps(to_json), mimetype="application/json")

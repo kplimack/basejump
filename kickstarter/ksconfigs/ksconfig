@@ -76,6 +76,7 @@ chvt 3
 echo -e \\a
 
 (
+  grep -q '^NOZEROCONF=yes' /etc/sysconfig/network || sed -i -e '/^NETWORKING=yes/a NOZEROCONF=yes' /etc/sysconfig/network
   /etc/init.d/ntpd stop
   /usr/sbin/ntpdate -v -u 0.pool.ntp.org
   hwclock --systohc
@@ -122,6 +123,9 @@ echo -e \\a
   chkconfig --level 345 named off || :
 
   date > /etc/birthday
+
+  echo "Telling Basejump to let me localboot..."
+  curl -s http://__BASEJUMP_URL__/kickstarter/imdone/__ASSET_ID__
 
 ) 2>&1 | tee /root/ks-postinstall.log
 
