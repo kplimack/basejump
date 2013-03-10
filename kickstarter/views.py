@@ -158,11 +158,14 @@ def kickme(request, opsys, release, arch, asset=None):
             #ifname = asset.primary_interface.name
             #print "SEARCHING FOR MACADDR OF %s" % ifname
             ifname = "em1"
-            for i in range(0, 5):
-                cur_mac = request.META['HTTP_X_RHN_PROVISIONING_MAC_' + str(i)]
-                print "CHECKING for %s" % cur_mac
-                if ifname in str(cur_mac):
-                    CLIENT_MAC = str(cur_mac)
+            for i in range(0, 7):
+                try:
+                    cur_mac = request.META['HTTP_X_RHN_PROVISIONING_MAC_' + str(i)]
+                    print "CHECKING for %s" % cur_mac
+                    if ifname in str(cur_mac):
+                        CLIENT_MAC = str(cur_mac)
+                except:
+                    pass
         except KeyError:
             response.write("NO MAC ADDRES SENT IN REQUEST\n")
             return response
