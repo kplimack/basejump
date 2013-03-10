@@ -252,7 +252,8 @@ def chef_client(request):
 def BootFileName(mac):
     tftp_root = getSetting('TFTP_ROOT')
     pxe_root = tftp_root + '/pxelinux.cfg'
-    mac_pxe_file = pxe_root + '/01-' + re.sub("(.{2})", "\\1-", mac, re.DOTALL)[:17]
+    mac = mac.lower()
+    mac_pxe_file = pxe_root + '/01-' + re.sub("(.{2})", "\\1-", mac.lower(), re.DOTALL)[:17]
     return mac_pxe_file
 
 def checkBootOption(asset_id):
