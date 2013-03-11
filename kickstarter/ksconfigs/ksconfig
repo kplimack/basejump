@@ -95,6 +95,9 @@ echo -e \\a
   yum -y update glibc || :
   rpm -e $(rpm -q kernel) || :
 
+  # Fix FQDN
+  echo -e "__IPADDR__\t__HOSTNAME__" >> /etc/hosts
+
   # prep us for Chef
   rpm -Uvh http://rbel.frameos.org/rbel6
   yum install -y ruby ruby-devel ruby-ri ruby-rdoc ruby-shadow gcc gcc-c++ automake autoconf make curl dmidecode

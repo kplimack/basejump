@@ -204,6 +204,8 @@ def kickme(request, opsys, release, arch, asset=None):
     ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
     ksconfig = ksconfig.replace('__ARCH__', arch)
     ksconfig = ksconfig.replace('__ASSET_ID__', str(asset.id))
+    ksconfig = ksconfig.replace('__IPADDR__', str(CLIENT_IP))
+    ksconfig = ksconfig.replace('__HOSTNAME__', str(asset.hostname))
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
     response.write(ksconfig)
     #else:
