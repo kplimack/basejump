@@ -1,0 +1,136 @@
+install
+lang en_US.UTF-8
+keyboard us
+timezone America/New_York
+skipx
+text
+network __NETWORK__
+url --url __REPO_URL__
+rootpw fubar
+reboot
+firewall --disabled
+selinux --disabled
+authconfig --enableshadow --enablemd5
+
+
+zerombr yes
+clearpart  --all --initlabel
+bootloader --location=mbr --append 'biosdevname=0 selinux=0 console=ttyS0,115200n8'
+part /boot --fstype ext3 --size=200   --asprimary
+part /     --fstype ext3 --size=8192  --asprimary
+part swap                --size=4096  --asprimary
+part /tmp  --fstype ext3 --size=4096
+part /usr  --fstype ext3 --size=16384
+part /home --fstype ext3 --size=4096 --grow
+part /var  --fstype ext3 --size=51200 --grow
+
+%packages
+screen
+vim-enhanced
+emacs
+e2fsprogs
+ntp
+curl
+wget
+telnet
+-irda-utils.__ARCH__
+-prelink.__ARCH__
+-logwatch.__ARCH__
+-finger.__ARCH__
+-isdn4k-utils.__ARCH__
+-ppp.__ARCH__
+-rdate.__ARCH__
+-rdist.__ARCH__
+-rp-pppoe.__ARCH__
+-rsh.__ARCH__
+-wvdial.__ARCH__
+-ypbind.__ARCH__
+-yp-tools.__ARCH__
+-bluez-hcidump.__ARCH__
+-bluez-utils.__ARCH__
+-bluez-libs.__ARCH__
+-bluez-pin.__ARCH__
+-vnc-server.__ARCH__
+-selinux-policy-targeted.__ARCH__
+-policycoreutils.__ARCH__
+-setools.__ARCH__
+-xorg-x11-Mesa-libGL.__ARCH__
+-NetworkManager.__ARCH__
+-caching-nameserver.noarch
+-valgrind.i386
+-valgrind-callgrind.i386
+-doxygen.__ARCH__
+-ckermit.__ARCH__
+-gcc-gfortran.__ARCH__
+-libgfortran.__ARCH__
+-alsa-utils.__ARCH__
+-anacron.__ARCH__
+-pcmcia-cs.__ARCH__
+-system-config-soundcard.noarch
+-firstboot.noarch
+-selinux-policy-targeted.noarch
+
+%post
+exec < /dev/tty3 > /dev/tty3
+chvt 3
+echo -e \\a
+
+(
+  grep -q '^NOZEROCONF=yes' /etc/sysconfig/network || sed -i -e '/^NETWORKING=yes/a NOZEROCONF=yes' /etc/sysconfig/network
+  /etc/init.d/ntpd stop
+  /usr/sbin/ntpdate -v -u 0.pool.ntp.org
+  hwclock --systohc
+  rpm --import /usr/share/rhn/*KEY*
+  rm -rf /etc/yum.repos.d/*
+
+  wget -q http://__BASEJUMP_URL__/kickstarter/GetRepo/CentOS-Base.repo -O /etc/yum.repos.d/CentOS-Base.repo
+
+  yum -y remove selinux-policy-targeted || :
+  yum -y remove anacron pcmcia-cs NetworkManager || :
+
+  yum -y update yum
+  yum -y update rpm rpm-libs || :
+  yum -y update mkinitrd || :
+  yum -y update kernel-smp kernel-smp-devel || :
+  yum -y update glibc || :
+  rpm -e $(rpm -q kernel) || :
+
+  # prep us for Chef
+  rpm -Uvh http://rbel.frameos.org/rbel6
+  yum install -y ruby ruby-devel ruby-ri ruby-rdoc ruby-shadow gcc gcc-c++ automake autoconf make curl dmidecode
+  cd /tmp
+  curl -O http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz
+  tar zxf rubygems-1.8.10.tgz
+  cd rubygems-1.8.10
+  ruby setup.rb --no-format-executable
+  gem install chef --no-ri --no-rdoc
+
+  # now get the Chef validation key
+  mkdir -p /etc/chef
+  wget -q http://__BASEJUMP_URL__/kickstarter/chef/validator -O /etc/chef/validation.pem
+  wget -q http://__BASEJUMP_URL__/kickstarter/chef/client -O /etc/chef/client.rb
+
+  # turn off/on some services
+  chkconfig --level 345 ntpd on
+  chkconfig yum off
+  chkconfig --level 345 cups off || :
+  chkconfig --level 345 cups-config-daemon off || :
+  chkconfig --level 345 cpuspeed off || :
+  chkconfig --level 345 atd off || :
+  chkconfig --level 345 gpm off || :
+  chkconfig --level 345 mDNSResponder off || :
+  chkconfig --level 345 nifd off || :
+  chkconfig --level 345 named off || :
+
+  date > /etc/birthday
+
+  echo "Telling Basejump to let me localboot..."
+  curl -s http://__BASEJUMP_URL__/kickstarter/imdone/__ASSET_ID__
+
+) 2>&1 | tee /root/ks-postinstall.log
+
+echo -e \\a
+chvt 1
+exit 0
+
+%end
