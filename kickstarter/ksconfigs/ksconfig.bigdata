@@ -12,7 +12,6 @@ firewall --disabled
 selinux --disabled
 authconfig --enableshadow --enablemd5
 
-
 zerombr yes
 clearpart  --all --initlabel
 bootloader --location=mbr --append 'biosdevname=0 selinux=0 console=ttyS0,115200n8'
@@ -21,8 +20,9 @@ part /     --fstype ext3 --size=8192  --asprimary
 part swap                --size=4096  --asprimary
 part /tmp  --fstype ext3 --size=4096
 part /usr  --fstype ext3 --size=16384
-part /home --fstype ext3 --size=4096 --grow
-part /var  --fstype ext3 --size=51200 --grow
+part /home --fstype ext3 --size=4096
+part /var  --fstype ext3 --size=4096
+part /data --fstype ext3 --size=47100 --grow
 
 %packages
 screen
@@ -94,6 +94,9 @@ echo -e \\a
   yum -y update kernel-smp kernel-smp-devel || :
   yum -y update glibc || :
   rpm -e $(rpm -q kernel) || :
+
+  # Fix FQDN
+  echo -e "__IPADDR__\t__HOSTNAME__" >> /etc/hosts
 
   # prep us for Chef
   rpm -Uvh http://rbel.frameos.org/rbel6
