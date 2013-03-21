@@ -33,6 +33,11 @@ ntp
 curl
 wget
 telnet
+make
+automake
+gcc
+gcc-c++
+kernel-devel
 -irda-utils.__ARCH__
 -prelink.__ARCH__
 -logwatch.__ARCH__
