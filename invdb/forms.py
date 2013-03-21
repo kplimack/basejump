@@ -159,7 +159,7 @@ class AddAsset(BootstrapForm):
     hostname = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']))
     primary_interface_name = forms.CharField(max_length=10, widget=forms.TextInput(attrs=styles['textbox']), initial="eth0")
     primary_interface_ip4 = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
-    primary_interface_netmask = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox'])),
+    primary_interface_netmask = forms.IPAddressField(widget=forms.TextInput(attrs=styles['textbox']), required=False)
     primary_interface_mac = forms.CharField(max_length=12, widget=forms.TextInput(attrs=styles['textbox']), required=False)
     primary_interface_vlan = forms.CharField(widget=forms.TextInput(attrs=styles['textbox']), initial="0")
     console = forms.CharField(max_length=50, widget=forms.TextInput(attrs=styles['textbox']), required=False)
