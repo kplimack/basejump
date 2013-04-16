@@ -16,13 +16,13 @@ zerombr yes
 clearpart  --all --drives=sda --initlabel
 bootloader --location=mbr --append 'biosdevname=0 selinux=0 console=ttyS0,115200n8'
 part /boot --fstype ext4 --size=200   --asprimary
-part /     --fstype ext4 --size=8192  --asprimary
+part /     --fstype ext4 --size=4096  --asprimary
 part swap                --size=4096  --asprimary
-part /tmp  --fstype ext4 --size=4096
-part /usr  --fstype ext4 --size=16384
-part /home --fstype ext4 --size=16384
+part /tmp  --fstype ext4 --size=2048
+part /usr  --fstype ext4 --size=12288
+part /home --fstype ext4 --size=4096
 part /var  --fstype ext4 --size=4096
-part /data --fstype ext4 --size=47100 --grow
+part /data --fstype ext4 --size=8096 --grow
 
 %packages
 screen
