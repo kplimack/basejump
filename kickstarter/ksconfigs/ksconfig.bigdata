@@ -19,9 +19,9 @@ part /boot --fstype ext4 --size=200   --asprimary
 part /     --fstype ext4 --size=4096  --asprimary
 part swap                --size=4096  --asprimary
 part /tmp  --fstype ext4 --size=2048
-part /usr  --fstype ext4 --size=12288
+part /usr  --fstype ext4 --size=4096
 part /home --fstype ext4 --size=4096
-part /var  --fstype ext4 --size=4096
+part /var  --fstype ext4 --size=12288
 part /data --fstype ext4 --size=8096 --grow
 
 %packages
