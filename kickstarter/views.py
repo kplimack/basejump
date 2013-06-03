@@ -303,7 +303,7 @@ def seedme(request, opsys, release, arch, asset=None):
     ksconfig = ksconfig.replace('__HOSTNAME__', str(asset.hostname))
     ksconfig = ksconfig.replace('__NAMESERVER__', str(CLIENT_NS))
     ksconfig = ksconfig.replace('__GATEWAY__', str(CLIENT_GATEWAY))
-    ksconfig = ksconfig.replace('__NETWORK__', str(CLIENT_NETMASK))
+    ksconfig = ksconfig.replace('__NETMASK__', str(CLIENT_NETMASK))
     ksconfig = ksconfig.replace('__ROOT_DISK__', str(ROOT_DISK))
     ksconfig = ksconfig.replace('__DOMAINNAME__', str(getSetting('DOMAINNAME')))
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
