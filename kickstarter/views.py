@@ -254,17 +254,7 @@ def seedme(request, opsys, release, arch, asset=None):
     if asset is None:
         CLIENT_MAC = None
         try:
-            # HTTP_USER_AGENT
-            #print "SEARCHING FOR MACADDR OF %s" % ifname
-            ks_interfaces = [ "em1", "eth0" ]
-            for i in range(0, 7):
-                try:
-                    cur_mac = request.META['HTTP_USER_AGENT' + str(i)]
-                    print "CHECKING for %s" % cur_mac
-                    if any(ifname in str(cur_mac) for ifname in ks_interfaces):
-                        CLIENT_MAC = str(cur_mac)
-                except:
-                    pass
+            cur_mac = request.META['HTTP_X_MAC_ADDRESS']
         except KeyError:
             response.write("NO MAC ADDRESS SENT IN PRESEED REQUEST\n")
             return response
