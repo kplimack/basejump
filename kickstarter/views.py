@@ -107,7 +107,10 @@ def getSetting(setting_key):
 def get_ksconfig(request, hostname, opsys, release, arch):
     asset = Asset.objects.get(hostname=hostname)
     print "Getting ksconfig for %s" % asset.hostname
-    return kickme(request, opsys, release, arch, asset)
+    if opsys in "redhat", "centos", "fedora":
+        return kickme(request, opsys, release, arch, asset)
+    elif opsys in "debian", "ubuntu":
+        return seedme(request, opsys, release, arch, asset)
 
 def kickme(request, opsys, release, arch, asset=None):
     masks = {
@@ -206,6 +209,103 @@ def kickme(request, opsys, release, arch, asset=None):
     ksconfig = ksconfig.replace('__ASSET_ID__', str(asset.id))
     ksconfig = ksconfig.replace('__IPADDR__', str(CLIENT_IP))
     ksconfig = ksconfig.replace('__HOSTNAME__', str(asset.hostname))
+    log.write("Returning the following ksconfig:\n%s" % ksconfig)
+    response.write(ksconfig)
+    #else:
+    #    response.write("IP ADDRESS FOR (%s) NOT FOUND IN INVENTORY:\n" % CLIENT_MAC)
+    return response
+
+def seedme(request, opsys, release, arch, asset=None):
+    masks = {
+        '255.255.255.255': 32,
+        '255.255.255.252': 30,
+        '255.255.255.248': 29,
+        '255.255.255.240': 28,
+        '255.255.255.224': 27,
+        '255.255.255.192': 26,
+        '255.255.255.128': 25,
+        '255.255.255.0': 24,
+        '255.255.254.0': 23,
+        '255.255.252.0': 22,
+        '255.255.248.0': 21,
+        '255.255.240.0': 20,
+        '255.255.224.0': 19,
+        '255.255.192.0': 18,
+        '255.255.128.0': 17,
+        '255.255.0.0': 16,
+        '255.254.0.0': 15,
+        '255.252.0.0': 14,
+        '255.248.0.0': 13,
+        '255.240.0.0': 12,
+        '255.224.0.0': 11,
+        '255.192.0.0': 10,
+        '255.128.0.0': 9,
+        '255.0.0.0': 8,
+        '254.0.0.0': 7,
+        '252.0.0.0': 6,
+        '248.0.0.0': 5,
+        '240.0.0.0': 4,
+    }
+
+    response = HttpResponse(content_type="text/plain")
+    debugging =  "Operating System: %s\nRelease: %s\nArch: %s\n" % (opsys, release, arch)
+    log = open('kicker.log', 'w')
+    log.write("%s" % request)
+    if asset is None:
+        CLIENT_MAC = None
+        try:
+            # HTTP_USER_AGENT
+            #print "SEARCHING FOR MACADDR OF %s" % ifname
+            ks_interfaces = [ "em1", "eth0" ]
+            for i in range(0, 7):
+                try:
+                    cur_mac = request.META['HTTP_USER_AGENT' + str(i)]
+                    print "CHECKING for %s" % cur_mac
+                    if any(ifname in str(cur_mac) for ifname in ks_interfaces):
+                        CLIENT_MAC = str(cur_mac)
+                except:
+                    pass
+        except KeyError:
+            response.write("NO MAC ADDRESS SENT IN PRESEED REQUEST\n")
+            return response
+        if CLIENT_MAC is None:
+            msg = "MAC ADDR NOT FOUND IN REQUEST"
+            response.write(msg)
+            print "%s" % msg
+            return msg
+        CLIENT_MAC = CLIENT_MAC.partition(' ')[2].replace(':','')
+        try:
+            asset = Asset.objects.get(primary_interface__mac=CLIENT_MAC)
+        except:
+            response.write("Could not find asset with MAC: '%s'\n" % CLIENT_MAC)
+            return response
+    else:
+        CLIENT_MAC = asset.primary_interface.mac
+    CLIENT_IP = asset.primary_interface.ip4
+    if CLIENT_IP is None:
+        response.write("NO CLIENT IP IN DATABASE\n")
+        return response
+    if asset.hostname is None:
+        response.write("CLIENT_HOSTNAME NOT DEFINED FOR INTEFFACE WITH MAC: %s\n" % CLIENT_MAC)
+        return response
+    ROOT_DISK = "/dev/sda"
+    if asset.model == "vmware":
+        ROOT_DISK = "/dev/vda"
+    CLIENT_NETMASK=asset.primary_interface.netmask
+    print "ASSET INFO: %s/%s(%s)/%s" % (CLIENT_IP, CLIENT_NETMASK, masks[CLIENT_NETMASK], CLIENT_MAC)
+    addr = ipaddr.IPNetwork(str(CLIENT_IP) + "/" + str(masks[CLIENT_NETMASK]))
+    CLIENT_GATEWAY = addr.network + 1
+    CLIENT_NS=getSetting('PXE_NS1')
+    ksconfig = open('kickstarter/ksconfigs/ksconfig', 'r').read()
+    ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
+    ksconfig = ksconfig.replace('__ASSET_ID__', str(asset.id))
+    ksconfig = ksconfig.replace('__IPADDR__', str(CLIENT_IP))
+    ksconfig = ksconfig.replace('__HOSTNAME__', str(asset.hostname))
+    ksconfig = ksconfig.replace('__NAMESERVER__', str(CLIENT_NS))
+    ksconfig = ksconfig.replace('__GATEWAY__', str(CLIENT_GATEWAY))
+    ksconfig = ksconfig.replace('__NETWORK__', str(CLIENT_NETMASK))
+    ksconfig = ksconfig.replace('__ROOT_DISK__', str(ROOT_DISK))
+    ksconfig = ksconfig.replace('__DOMAINNAME__', str(getSetting('DOMAINNAME')))
     log.write("Returning the following ksconfig:\n%s" % ksconfig)
     response.write(ksconfig)
     #else:

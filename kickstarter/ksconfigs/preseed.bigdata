@@ -13,8 +13,8 @@ d-i netcfg/disable_dhcp boolean true
 
 # Static network configuration.
 d-i netcfg/get_nameservers string __NAMESERVER__
-d-i netcfg/get_ipaddress string ip:=__IPADDRESS__
-d-i netcfg/get_netmask string __NETWORK__
+d-i netcfg/get_ipaddress string ip:=__IPADDR__
+d-i netcfg/get_netmask string __NETMASK__
 d-i netcfg/get_gateway string __GATEWAY__
 d-i netcfg/confirm_static boolean true
 
