@@ -12,6 +12,7 @@
       {% endif %}
     </li>
     {% endfor %}
+    <li><a href="{% url 'invdb.views.asset_spare %}"><i class="icon-cog"></i> Spares</a></li>
     <li><a href="{% url 'invdb.views.asset_add' %}"><i class="icon-cog"></i> Add Device</a></li>
     {% if areas %}
     <li class="nav-header">Areas</li>
