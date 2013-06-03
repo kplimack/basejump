@@ -107,9 +107,9 @@ def getSetting(setting_key):
 def get_ksconfig(request, hostname, opsys, release, arch):
     asset = Asset.objects.get(hostname=hostname)
     print "Getting ksconfig for %s" % asset.hostname
-    if opsys in "redhat", "centos", "fedora":
+    if opsys in ["redhat", "centos", "fedora"]:
         return kickme(request, opsys, release, arch, asset)
-    elif opsys in "debian", "ubuntu":
+    elif opsys in ["debian", "ubuntu"]:
         return seedme(request, opsys, release, arch, asset)
 
 def kickme(request, opsys, release, arch, asset=None):
@@ -296,7 +296,7 @@ def seedme(request, opsys, release, arch, asset=None):
     addr = ipaddr.IPNetwork(str(CLIENT_IP) + "/" + str(masks[CLIENT_NETMASK]))
     CLIENT_GATEWAY = addr.network + 1
     CLIENT_NS=getSetting('PXE_NS1')
-    ksconfig = open('kickstarter/ksconfigs/ksconfig', 'r').read()
+    ksconfig = open('kickstarter/ksconfigs/preseed.bigdata', 'r').read()
     ksconfig = ksconfig.replace('__BASEJUMP_URL__', request.META['HTTP_HOST'])
     ksconfig = ksconfig.replace('__ASSET_ID__', str(asset.id))
     ksconfig = ksconfig.replace('__IPADDR__', str(CLIENT_IP))
