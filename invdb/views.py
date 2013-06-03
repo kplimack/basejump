@@ -20,9 +20,9 @@ def index(request):
 
 def asset_spare(request, asset_type=None):
     if asset_type:
-        assets = Asset.objects.filter(asset_type__name__exact==asset_type,asset_type__logical_status_code__exaxt="Spare")
+        assets = Asset.objects.filter(asset_type__name__exact==asset_type,logical_status__code__exaxt='Spare')
     else:
-        assets = Asset.objects.filter(logical_status_code__exact="Spare")
+        assets = Asset.objects.filter(logical_status__code__exact='Spare')
     return view(request, 'asset_view', None, None, assets)
 
 def asset_view(request, asset_type=None):
