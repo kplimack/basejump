@@ -254,7 +254,7 @@ def seedme(request, opsys, release, arch, asset=None):
     if asset is None:
         CLIENT_MAC = None
         try:
-            CLIENT_MAC = request.META['HTTP_X_MAC_ADDRESS']
+            CLIENT_MAC = request.META['HTTP_USER_AGENT']
         except KeyError:
             response.write("NO MAC ADDRESS SENT IN PRESEED REQUEST\n")
             return response
