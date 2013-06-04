@@ -8,4 +8,4 @@ admin.site.register(AssetType)
 admin.site.register(Role)
 admin.site.register(LogicalStatusCode)
 admin.site.register(PhysicalStatusCode)
-
+admin.site.register(Interface)
