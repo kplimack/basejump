@@ -263,7 +263,7 @@ def seedme(request, opsys, release, arch, asset=None):
             response.write(msg)
             print "%s" % msg
             return msg
-        CLIENT_MAC = CLIENT_MAC.partition(' ')[2].replace(':','')
+        CLIENT_MAC = CLIENT_MAC.replace(':','')
         try:
             asset = Asset.objects.get(primary_interface__mac=CLIENT_MAC)
         except:
@@ -282,7 +282,7 @@ def seedme(request, opsys, release, arch, asset=None):
     if asset.model == "vmware":
         ROOT_DISK = "/dev/vda"
     CLIENT_NETMASK=asset.primary_interface.netmask
-    print "ASSET INFO: %s/%s(%s)/%s" % (CLIENT_IP, CLIENT_NETMASK, masks[CLIENT_NETMASK], CLIENT_MAC)
+    print "ASSET INFO: %s - %s/%s(%s)/%s" % (asset.hostname, CLIENT_IP, CLIENT_NETMASK, masks[CLIENT_NETMASK], CLIENT_MAC)
     addr = ipaddr.IPNetwork(str(CLIENT_IP) + "/" + str(masks[CLIENT_NETMASK]))
     CLIENT_GATEWAY = addr.network + 1
     CLIENT_NS=getSetting('PXE_NS1')
