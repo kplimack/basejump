@@ -172,7 +172,6 @@ d-i grub-installer/with_other_os boolean true
 d-i finish-install/keep-consoles boolean true
 d-i finish-install/reboot_in_progress note
 d-i cdrom-detect/eject boolean false
-d-i preseed/early_command string /sbin/early_command
 
 d-i preseed/late_command string \
 date > /etc/birthday ; \
