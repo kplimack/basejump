@@ -177,4 +177,4 @@ d-i preseed/early_command string /sbin/early_command
 d-i preseed/late_command string \
 date > /etc/birthday ; \
 echo "Telling Basejump to let me localboot..." ; \
-curl -s http://__BASEJUMP_URL__/kickstarter/imdone/__ASSET_ID__ ;
+wget -q http://__BASEJUMP_URL__/kickstarter/imdone/__ASSET_ID__ ;
