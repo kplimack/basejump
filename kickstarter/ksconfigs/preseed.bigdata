@@ -22,8 +22,10 @@ d-i netcfg/get_gateway string __GATEWAY__
 d-i netcfg/confirm_static boolean true
 
 d-i netcfg/get_hostname string __HOSTNAME__
+d-i netcfg/get_hostname seen true
+d-i netcfg/hostname string __HOSTNAME__
 d-i netcfg/get_domain string __DOMAINNAME__
-
+d-i netcfg/get_domain seen true
 d-i hw-detect/load_firmware boolean true
 
 ### Mirror settings
@@ -175,6 +177,8 @@ d-i grub-installer/with_other_os boolean true
 d-i finish-install/keep-consoles boolean true
 d-i finish-install/reboot_in_progress note
 d-i cdrom-detect/eject boolean false
+
+d-i preseed/early_command string /bin/killall.sh; /bin/netcfg
 
 d-i preseed/late_command string \
 date > /etc/birthday ; \
