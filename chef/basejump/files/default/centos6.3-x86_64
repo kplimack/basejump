@@ -1,0 +1,125 @@
+## Global options
+
+# To guarantee that the serial directive works properly, it should be the first
+# directive in the configuration file.
+# - http://syslinux.zytor.com/wiki/index.php/SYSLINUX#SERIAL_port_.5B.5Bbaudrate.5D_flowcontrol.5D
+serial 0 115200
+UI /modules/menu.c32
+#UI /modules/vesamenu.c32
+MENU TITLE iHeartRadio PXE Menu
+MENU BACKGROUND /modules/background.png
+PROMPT 0
+
+# Replaces message below menu
+MENU TABMSG Press [Tab] to edit options or [Esc] to get a prompt
+
+# Text displayed below menu with countdown timer replacing '#'
+MENU AUTOBOOT Defaulting to localboot in # seconds
+DEFAULT CentOS-6.3_x86_64
+TIMEOUT 50 # 5 secs
+
+# Don't halt the processor while idle. Halting the processor while idle
+# significantly reduces the power consumption, but can cause poor
+# responsiveness to the serial console
+NOHALT 1
+
+# For serial console, append the following to the kernel command line:
+# console=tty0 console=ttyS0,115200n8 (/dev/ttyS0, 115200 baud, no parity, word size 8 bits)
+#
+# When multiple console= options are listed like above, the Linux kernel will
+# output to both when possible. i.e vga AND serial. This is useful for
+# troubleshooting problems in the datacenter as well as over serial console
+# - http://www.kernel.org/doc/Documentation/serial-console.txt
+
+## Operating Systems
+MENU BEGIN
+    MENU TITLE iHeartRadio PXE Menu - Install Operating System
+    MENU TABMSG Press [Tab] to edit options or [Esc] to go back
+    MENU LABEL Install Operating System
+    TEXT help
+        Install Operating System
+    ENDTEXT
+
+# CentOS
+    LABEL -
+        MENU LABEL Install CentOS
+        MENU disable
+
+    # For a full list of Anaconda options see:
+    # - http://fedoraproject.org/wiki/Anaconda/Options
+
+    LABEL CentOS-6.3_x86_64
+        MENU LABEL centos6.3-x86_64
+        MENU INDENT 4
+        KERNEL distros/centos/6.3/x86_64/vmlinuz
+        APPEND ks=http://10.5.32.21:8080/kickstarter/kickme/centos/6.3/x86_64 initrd=distros/centos/6.3/x86_64/initrd.img rd_NO_PLYMOUTH ramdisk_size=9216 console=tty0 console=ttyS0,115200n8 serial skipddc text noipv6 kssendmac ksdevice=em1
+
+MENU END
+MENU BEGIN
+    MENU TITLE Run Utility
+    MENU TITLE iHeartRadio PXE Menu - Run Utility
+    MENU TABMSG Press [Tab] to edit options or [Esc] to go back
+    MENU LABEL Run Utility
+
+    TEXT help
+        Run a Utility
+    ENDTEXT
+
+    LABEL -
+        MENU LABEL Utilities
+        MENU disable
+
+    LABEL gpxe
+        MENU LABEL gPXE
+        MENU INDENT 2
+        KERNEL /utilities/gpxe/undionly.0
+
+    TEXT help
+        chainload gPXE from PXE capable NIC
+    ENDTEXT
+
+    LABEL rescue-centos6.3-x86_64
+        MENU LABEL Centos 6.3 Rescue Media
+        MENU INDENT 2
+        KERNEL /centos/6.3/x86_64/vmlinuz
+        APPEND ks=http://10.5.32.21:8080/kickstarter/kickme/centos/6.3/x86_64/rescue biosdevname=0 kssendmac initrd=/centos/6.3/x86_64/initrd.img ramdisk_size=9216 console=tty0 skipddc text noipv6 rescue ksdevice=em1
+
+    TEXT help
+        Centos rescue media
+    ENDTEXT
+
+    LABEL memtest86+-4.10
+        MENU LABEL Memtest86+-4.10
+        MENU INDENT 2
+        KERNEL /utilities/memtest86+/memtest86+-4.10.bin console=tty0 console=ttyS0,115200n8
+
+    TEXT help
+       Memory diagnostic
+    ENDTEXT
+
+MENU END
+
+LABEL poweroff
+    MENU LABEL Power off machine
+    comboot /modules/poweroff.com
+
+    TEXT help
+        APM Power off
+    ENDTEXT
+
+LABEL reboot
+    MENU LABEL Reboot machine
+    com32 /modules/reboot.c32
+
+    TEXT help
+        APM Reboot
+    ENDTEXT
+
+LABEL localboot
+    MENU LABEL Boot local hard disk
+    localboot 0x80
+    MENU default
+
+    TEXT help
+        Boot local hard disk
+    ENDTEXT
